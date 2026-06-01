@@ -4,11 +4,19 @@ import { ChevronDown, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { Reading } from '@/features/readings/types'
 
-type ContextFields = Omit<Reading,
-  'id' | 'timestamp' | 'systolic' | 'diastolic' | 'pulse' | 'source'>
+type ContextFields = Omit<
+  Reading,
+  'id' | 'timestamp' | 'systolic' | 'diastolic' | 'pulse' | 'source'
+>
 
 interface HealthContextFieldsProps {
   value: ContextFields
@@ -44,7 +52,9 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
                 value={value.armUsed ?? null}
                 onValueChange={(v) => set('armUsed', (v as 'left' | 'right') || undefined)}
               >
-                <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="—" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="left">Left</SelectItem>
                   <SelectItem value="right">Right</SelectItem>
@@ -55,9 +65,13 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
               <Label className="text-xs">Body position</Label>
               <Select
                 value={value.bodyPosition ?? null}
-                onValueChange={(v) => set('bodyPosition', (v as Reading['bodyPosition']) || undefined)}
+                onValueChange={(v) =>
+                  set('bodyPosition', (v as Reading['bodyPosition']) || undefined)
+                }
               >
-                <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="—" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="sitting">Sitting</SelectItem>
                   <SelectItem value="standing">Standing</SelectItem>
@@ -77,9 +91,11 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
                   type="button"
                   onClick={() => set('stressLevel', value.stressLevel === n ? undefined : n)}
                   className={`h-9 w-9 rounded-full border text-sm font-medium transition-colors
-                    ${value.stressLevel === n
-                      ? 'bg-primary text-primary-foreground border-primary'
-                      : 'border-border hover:bg-muted'}`}
+                    ${
+                      value.stressLevel === n
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'border-border hover:bg-muted'
+                    }`}
                 >
                   {n}
                 </button>
@@ -92,18 +108,27 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
             <div>
               <Label className="text-xs">Sleep (hours)</Label>
               <Input
-                type="number" min={0} max={24} step={0.5}
+                type="number"
+                min={0}
+                max={24}
+                step={0.5}
                 value={value.sleepHours ?? ''}
-                onChange={(e) => set('sleepHours', e.target.value ? Number(e.target.value) : undefined)}
+                onChange={(e) =>
+                  set('sleepHours', e.target.value ? Number(e.target.value) : undefined)
+                }
               />
             </div>
             <div>
               <Label className="text-xs">Sleep quality</Label>
               <Select
                 value={value.sleepQuality ?? null}
-                onValueChange={(v) => set('sleepQuality', (v as Reading['sleepQuality']) || undefined)}
+                onValueChange={(v) =>
+                  set('sleepQuality', (v as Reading['sleepQuality']) || undefined)
+                }
               >
-                <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+                <SelectTrigger>
+                  <SelectValue placeholder="—" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="poor">Poor</SelectItem>
                   <SelectItem value="fair">Fair</SelectItem>
@@ -118,9 +143,13 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
             <Label className="text-xs">Physical activity today</Label>
             <Select
               value={value.activityLevel ?? null}
-              onValueChange={(v) => set('activityLevel', (v as Reading['activityLevel']) || undefined)}
+              onValueChange={(v) =>
+                set('activityLevel', (v as Reading['activityLevel']) || undefined)
+              }
             >
-              <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="—" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">None</SelectItem>
                 <SelectItem value="light">Light</SelectItem>
@@ -135,17 +164,25 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
             <div>
               <Label className="text-xs">Caffeine (cups)</Label>
               <Input
-                type="number" min={0} max={20}
+                type="number"
+                min={0}
+                max={20}
                 value={value.caffeineCount ?? ''}
-                onChange={(e) => set('caffeineCount', e.target.value ? Number(e.target.value) : undefined)}
+                onChange={(e) =>
+                  set('caffeineCount', e.target.value ? Number(e.target.value) : undefined)
+                }
               />
             </div>
             <div>
               <Label className="text-xs">Alcohol (drinks/24h)</Label>
               <Input
-                type="number" min={0} max={20}
+                type="number"
+                min={0}
+                max={20}
                 value={value.alcoholDrinks ?? ''}
-                onChange={(e) => set('alcoholDrinks', e.target.value ? Number(e.target.value) : undefined)}
+                onChange={(e) =>
+                  set('alcoholDrinks', e.target.value ? Number(e.target.value) : undefined)
+                }
               />
             </div>
           </div>
@@ -155,9 +192,13 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
             <Label className="text-xs">Sodium intake</Label>
             <Select
               value={value.sodiumIntake ?? null}
-              onValueChange={(v) => set('sodiumIntake', (v as Reading['sodiumIntake']) || undefined)}
+              onValueChange={(v) =>
+                set('sodiumIntake', (v as Reading['sodiumIntake']) || undefined)
+              }
             >
-              <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
+              <SelectTrigger>
+                <SelectValue placeholder="—" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="low">Low</SelectItem>
                 <SelectItem value="normal">Normal</SelectItem>
@@ -176,7 +217,8 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
                   const active = value.medicationTaken === boolVal
                   return (
                     <button
-                      key={opt} type="button"
+                      key={opt}
+                      type="button"
                       onClick={() => set('medicationTaken', active ? undefined : boolVal)}
                       className={`flex-1 rounded border py-2 text-sm transition-colors
                         ${active ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:bg-muted'}`}
@@ -190,9 +232,14 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
             <div>
               <Label className="text-xs">Weight (kg)</Label>
               <Input
-                type="number" min={20} max={300} step={0.1}
+                type="number"
+                min={20}
+                max={300}
+                step={0.1}
                 value={value.weightKg ?? ''}
-                onChange={(e) => set('weightKg', e.target.value ? Number(e.target.value) : undefined)}
+                onChange={(e) =>
+                  set('weightKg', e.target.value ? Number(e.target.value) : undefined)
+                }
               />
             </div>
           </div>

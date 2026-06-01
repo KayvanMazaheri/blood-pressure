@@ -17,19 +17,19 @@ export default function SettingsPage() {
     <div className="min-h-screen pb-8">
       <PageHeader title="Settings" backHref="/" />
       <main className="space-y-6 p-4">
-
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Targets</h2>
-          <TargetForm
-            settings={settings}
-            onSave={(target) => updateSettings({ target })}
-          />
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Targets
+          </h2>
+          <TargetForm settings={settings} onSave={(target) => updateSettings({ target })} />
         </section>
 
         <Separator />
 
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Weight Unit</h2>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Weight Unit
+          </h2>
           <UnitToggle
             value={settings?.units.weight ?? 'kg'}
             onChange={(weight) => updateSettings({ units: { weight } })}
@@ -48,9 +48,12 @@ export default function SettingsPage() {
         <Separator />
 
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Import</h2>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Import
+          </h2>
           <p className="mb-3 text-sm text-muted-foreground">
-            Import a CSV file with columns: date, time (optional), systolic, diastolic, pulse (optional).
+            Import a CSV file with columns: date, time (optional), systolic, diastolic, pulse
+            (optional).
           </p>
           <CsvImport onImported={reload} />
         </section>
@@ -58,7 +61,6 @@ export default function SettingsPage() {
         <Separator />
 
         <DangerZone />
-
       </main>
     </div>
   )

@@ -29,12 +29,17 @@ export function ReadingCard({ reading, onDelete, weightUnit }: ReadingCardProps)
   const [deleting, setDeleting] = useState(false)
 
   const ahaClass =
-    reading.systolic >= 140 ? 'text-red-400' :
-    reading.systolic >= 130 ? 'text-orange-400' :
-    reading.systolic >= 120 ? 'text-yellow-400' : 'text-green-400'
+    reading.systolic >= 140
+      ? 'text-red-400'
+      : reading.systolic >= 130
+        ? 'text-orange-400'
+        : reading.systolic >= 120
+          ? 'text-yellow-400'
+          : 'text-green-400'
 
-  const contextKeys = (Object.keys(CONTEXT_ICONS) as Array<keyof Reading>)
-    .filter((k) => reading[k] != null)
+  const contextKeys = (Object.keys(CONTEXT_ICONS) as Array<keyof Reading>).filter(
+    (k) => reading[k] != null
+  )
 
   async function handleDelete() {
     if (!confirm('Delete this reading?')) return
@@ -53,7 +58,9 @@ export function ReadingCard({ reading, onDelete, weightUnit }: ReadingCardProps)
             <span className="ml-2 text-sm text-muted-foreground">{reading.pulse} bpm</span>
           )}
         </div>
-        <span className="text-xs text-muted-foreground">{formatTimestamp(reading.timestamp, 'long')}</span>
+        <span className="text-xs text-muted-foreground">
+          {formatTimestamp(reading.timestamp, 'long')}
+        </span>
         {contextKeys.length > 0 && (
           <button
             type="button"
@@ -93,16 +100,24 @@ export function ReadingCard({ reading, onDelete, weightUnit }: ReadingCardProps)
           {reading.armUsed && <p>💪 Arm: {reading.armUsed}</p>}
           {reading.bodyPosition && <p>🪑 Position: {reading.bodyPosition}</p>}
           {reading.stressLevel != null && <p>🧠 Stress: {reading.stressLevel}/5</p>}
-          {reading.sleepHours != null && <p>😴 Sleep: {reading.sleepHours}h {reading.sleepQuality ?? ''}</p>}
+          {reading.sleepHours != null && (
+            <p>
+              😴 Sleep: {reading.sleepHours}h {reading.sleepQuality ?? ''}
+            </p>
+          )}
           {reading.activityLevel && <p>🏃 Activity: {reading.activityLevel}</p>}
           {reading.caffeineCount != null && <p>☕ Caffeine: {reading.caffeineCount} cups</p>}
           {reading.alcoholDrinks != null && <p>🍷 Alcohol: {reading.alcoholDrinks}</p>}
           {reading.sodiumIntake && <p>🧂 Sodium: {reading.sodiumIntake}</p>}
-          {reading.medicationTaken != null && <p>💊 Meds: {reading.medicationTaken ? 'taken' : 'missed'}</p>}
+          {reading.medicationTaken != null && (
+            <p>💊 Meds: {reading.medicationTaken ? 'taken' : 'missed'}</p>
+          )}
           {reading.weightKg != null && (
-            <p>⚖️ Weight: {weightUnit === 'lbs'
-              ? `${Math.round(reading.weightKg * 2.20462 * 10) / 10} lbs`
-              : `${reading.weightKg} kg`}
+            <p>
+              ⚖️ Weight:{' '}
+              {weightUnit === 'lbs'
+                ? `${Math.round(reading.weightKg * 2.20462 * 10) / 10} lbs`
+                : `${reading.weightKg} kg`}
             </p>
           )}
           {reading.notes && <p className="col-span-2">📝 {reading.notes}</p>}

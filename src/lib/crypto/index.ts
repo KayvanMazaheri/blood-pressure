@@ -11,21 +11,17 @@ async function getOrCreateKey(): Promise<CryptoKey> {
   const stored = localStorage.getItem(KEY_STORAGE_KEY)
   if (stored) {
     const jwk = JSON.parse(stored) as JsonWebKey
-    cachedKey = await crypto.subtle.importKey(
-      'jwk',
-      jwk,
-      { name: 'AES-GCM', length: 256 },
-      true,
-      ['encrypt', 'decrypt']
-    )
+    cachedKey = await crypto.subtle.importKey('jwk', jwk, { name: 'AES-GCM', length: 256 }, true, [
+      'encrypt',
+      'decrypt',
+    ])
     return cachedKey
   }
 
-  const key = await crypto.subtle.generateKey(
-    { name: 'AES-GCM', length: 256 },
-    true,
-    ['encrypt', 'decrypt']
-  )
+  const key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, [
+    'encrypt',
+    'decrypt',
+  ])
   const jwk = await crypto.subtle.exportKey('jwk', key)
   localStorage.setItem(KEY_STORAGE_KEY, JSON.stringify(jwk))
   cachedKey = key

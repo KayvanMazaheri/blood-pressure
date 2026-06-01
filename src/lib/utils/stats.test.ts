@@ -12,7 +12,12 @@ describe('average', () => {
 
 describe('linearRegression', () => {
   it('returns null for fewer than 3 points', () => {
-    expect(linearRegression([{ x: 1, y: 100 }, { x: 2, y: 110 }])).toBeNull()
+    expect(
+      linearRegression([
+        { x: 1, y: 100 },
+        { x: 2, y: 110 },
+      ])
+    ).toBeNull()
   })
   it('fits a perfect line', () => {
     const points = [

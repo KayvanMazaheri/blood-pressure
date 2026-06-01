@@ -19,17 +19,30 @@ export default function HistoryPage() {
       exportToCSV(readings)
     } else {
       setExporting(true)
-      try { await exportToBpdata(readings) }
-      finally { setExporting(false) }
+      try {
+        await exportToBpdata(readings)
+      } finally {
+        setExporting(false)
+      }
     }
   }
 
   const exportMenu = (
     <div className="flex gap-1">
-      <Button variant="ghost" size="sm" onClick={() => handleExport('csv')} disabled={readings.length === 0}>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => handleExport('csv')}
+        disabled={readings.length === 0}
+      >
         CSV
       </Button>
-      <Button variant="ghost" size="icon" onClick={() => handleExport('bpdata')} disabled={readings.length === 0 || exporting}>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => handleExport('bpdata')}
+        disabled={readings.length === 0 || exporting}
+      >
         <Download className="h-4 w-4" />
       </Button>
     </div>

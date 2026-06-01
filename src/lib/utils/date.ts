@@ -2,8 +2,11 @@ export function formatTimestamp(ts: number, style: 'short' | 'long' = 'short'): 
   const d = new Date(ts)
   if (style === 'long') {
     return d.toLocaleString(undefined, {
-      month: 'short', day: 'numeric', year: 'numeric',
-      hour: '2-digit', minute: '2-digit',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     })
   }
   const now = new Date()

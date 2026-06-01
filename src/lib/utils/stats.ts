@@ -3,7 +3,10 @@ export function average(values: number[]): number | null {
   return values.reduce((a, b) => a + b, 0) / values.length
 }
 
-interface Point { x: number; y: number }
+interface Point {
+  x: number
+  y: number
+}
 interface RegressionResult {
   slope: number
   intercept: number

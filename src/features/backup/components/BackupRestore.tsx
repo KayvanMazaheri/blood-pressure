@@ -36,11 +36,10 @@ export function BackupRestore({ onRestored }: { onRestored: () => void }) {
     setStatus('Backing up…')
     try {
       const readings = await dbGetAllReadings()
-      const kek = await crypto.subtle.generateKey(
-        { name: 'AES-GCM', length: 256 },
-        true,
-        ['encrypt', 'decrypt']
-      )
+      const kek = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, [
+        'encrypt',
+        'decrypt',
+      ])
       const kekJwk = await crypto.subtle.exportKey('jwk', kek)
       const payload = JSON.stringify(readings)
       const iv = crypto.getRandomValues(new Uint8Array(12))
@@ -101,7 +100,9 @@ export function BackupRestore({ onRestored }: { onRestored: () => void }) {
       const iv = combined.slice(0, 12)
       const ciphertext = combined.slice(12)
       const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, kek, ciphertext)
-      const readings = JSON.parse(new TextDecoder().decode(decrypted)) as Parameters<typeof dbAddReading>[0][]
+      const readings = JSON.parse(new TextDecoder().decode(decrypted)) as Parameters<
+        typeof dbAddReading
+      >[0][]
       await Promise.all(readings.map((r) => dbAddReading(r)))
       onRestored()
       reload()
@@ -117,7 +118,8 @@ export function BackupRestore({ onRestored }: { onRestored: () => void }) {
     return (
       <p className="text-sm text-muted-foreground">
         Google Drive backup requires{' '}
-        <code className="rounded bg-muted px-1 text-xs">NEXT_PUBLIC_GOOGLE_CLIENT_ID</code> to be set.
+        <code className="rounded bg-muted px-1 text-xs">NEXT_PUBLIC_GOOGLE_CLIENT_ID</code> to be
+        set.
       </p>
     )
   }

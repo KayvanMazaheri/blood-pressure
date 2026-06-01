@@ -11,7 +11,10 @@ export function parseCSV(csvText: string): ParseResult {
   const lines = csvText.trim().split(/\r?\n/)
   if (lines.length < 2) return { readings: [], errors: ['CSV has no data rows'] }
 
-  const headers = lines[0].toLowerCase().split(',').map((h) => h.trim())
+  const headers = lines[0]
+    .toLowerCase()
+    .split(',')
+    .map((h) => h.trim())
   const col = (name: string) => headers.indexOf(name)
 
   const dateIdx = col('date')
@@ -37,20 +40,29 @@ export function parseCSV(csvText: string): ParseResult {
     const pulseStr = pulseIdx !== -1 ? cells[pulseIdx] : undefined
 
     const parsedDate = parseDate(dateStr, timeStr)
-    if (!parsedDate) { errors.push(`row ${rowNum}: invalid date "${dateStr}"`); return }
+    if (!parsedDate) {
+      errors.push(`row ${rowNum}: invalid date "${dateStr}"`)
+      return
+    }
 
     const sys = Number(sysStr)
     const dia = Number(diaStr)
     const pulse = pulseStr ? Number(pulseStr) : undefined
 
     if (!sysStr || isNaN(sys) || sys < VALIDATION.systolic.min || sys > VALIDATION.systolic.max) {
-      errors.push(`row ${rowNum}: invalid systolic "${sysStr}"`); return
+      errors.push(`row ${rowNum}: invalid systolic "${sysStr}"`)
+      return
     }
     if (!diaStr || isNaN(dia) || dia < VALIDATION.diastolic.min || dia > VALIDATION.diastolic.max) {
-      errors.push(`row ${rowNum}: invalid diastolic "${diaStr}"`); return
+      errors.push(`row ${rowNum}: invalid diastolic "${diaStr}"`)
+      return
     }
-    if (pulse != null && (isNaN(pulse) || pulse < VALIDATION.pulse.min || pulse > VALIDATION.pulse.max)) {
-      errors.push(`row ${rowNum}: invalid pulse "${pulseStr}"`); return
+    if (
+      pulse != null &&
+      (isNaN(pulse) || pulse < VALIDATION.pulse.min || pulse > VALIDATION.pulse.max)
+    ) {
+      errors.push(`row ${rowNum}: invalid pulse "${pulseStr}"`)
+      return
     }
 
     readings.push({

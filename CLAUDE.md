@@ -12,17 +12,17 @@ A privacy-first blood pressure tracking application. Users' health data never le
 
 ## Tech Stack
 
-| Layer | Choice |
-|---|---|
-| Framework | Next.js (latest stable LTS) |
-| Runtime | Node.js (latest LTS) |
-| Language | TypeScript — strict mode, no `any` |
-| UI Components | shadcn/ui |
-| Styling | Tailwind CSS (via shadcn/ui) |
-| Storage | Browser-native: IndexedDB primary, localStorage for small config |
-| Backup / Sync | Google Drive API — opt-in, user-initiated only |
-| Deployment | GitHub Pages (static export). Vercel only if a server-side feature is strictly unavoidable. |
-| CI/CD | GitHub Actions |
+| Layer         | Choice                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------- |
+| Framework     | Next.js (latest stable LTS)                                                                 |
+| Runtime       | Node.js (latest LTS)                                                                        |
+| Language      | TypeScript — strict mode, no `any`                                                          |
+| UI Components | shadcn/ui                                                                                   |
+| Styling       | Tailwind CSS (via shadcn/ui)                                                                |
+| Storage       | Browser-native: IndexedDB primary, localStorage for small config                            |
+| Backup / Sync | Google Drive API — opt-in, user-initiated only                                              |
+| Deployment    | GitHub Pages (static export). Vercel only if a server-side feature is strictly unavoidable. |
+| CI/CD         | GitHub Actions                                                                              |
 
 ---
 
@@ -96,13 +96,15 @@ Follow these best practices in every workflow file:
 
 - **No AI attribution.** Never add `Co-authored-by: Claude`, `Co-authored-by: GitHub Copilot`, or any similar co-author trailer. Never reference AI, Claude, Copilot, or any coding agent in commit messages, PR descriptions, or code comments.
 - **Do not modify git config.** Never run `git config` commands.
-- **Commit message format.** Use imperative mood for the subject line (≤72 characters). Optionally follow with a blank line and a body that explains *why*, not *what*. Example:
+- **Commit message format.** Use imperative mood for the subject line (≤72 characters). Optionally follow with a blank line and a body that explains _why_, not _what_. Example:
+
   ```
   Add systolic range validation on entry form
 
   Rejects values outside the clinically plausible range (60–250 mmHg)
   to prevent accidental data corruption.
   ```
+
 - **No WIP commits to `main`.** Every commit merged to `main` must leave the codebase in a buildable, test-passing state.
 - **Atomic commits.** Each commit addresses one logical change. Do not bundle unrelated changes.
 
@@ -119,6 +121,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Sourced from [andrej
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
 Before implementing:
+
 - State your assumptions explicitly. If uncertain, ask.
 - If multiple interpretations exist, present them — don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
@@ -141,12 +144,14 @@ Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, sim
 **Touch only what you must. Clean up only your own mess.**
 
 When editing existing code:
+
 - Don't "improve" adjacent code, comments, or formatting.
 - Don't refactor things that aren't broken.
 - Match existing style, even if you'd do it differently.
 - If you notice unrelated dead code, mention it — don't delete it.
 
 When your changes create orphans:
+
 - Remove imports/variables/functions that YOUR changes made unused.
 - Don't remove pre-existing dead code unless asked.
 
@@ -157,11 +162,13 @@ The test: Every changed line should trace directly to the user's request.
 **Define success criteria. Loop until verified.**
 
 Transform tasks into verifiable goals:
+
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
 - "Refactor X" → "Ensure tests pass before and after"
 
 For multi-step tasks, state a brief plan:
+
 ```
 1. [Step] → verify: [check]
 2. [Step] → verify: [check]

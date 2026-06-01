@@ -23,7 +23,10 @@ export function exportToCSV(readings: Reading[]) {
 
 export async function exportToBpdata(readings: Reading[]) {
   // Generate a one-time KEK for this export
-  const kek = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt'])
+  const kek = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, [
+    'encrypt',
+    'decrypt',
+  ])
   const kekJwk = await crypto.subtle.exportKey('jwk', kek)
 
   // Encrypt the readings payload with the KEK

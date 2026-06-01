@@ -10,12 +10,15 @@ export function useSettings() {
     dbGetSettings().then(setSettings)
   }, [])
 
-  const updateSettings = useCallback(async (updates: Partial<Omit<Settings, 'id' | 'createdAt'>>) => {
-    const current = settings ?? (await dbGetSettings())
-    const next: Settings = { ...current, ...updates }
-    await dbSaveSettings(next)
-    setSettings(next)
-  }, [settings])
+  const updateSettings = useCallback(
+    async (updates: Partial<Omit<Settings, 'id' | 'createdAt'>>) => {
+      const current = settings ?? (await dbGetSettings())
+      const next: Settings = { ...current, ...updates }
+      await dbSaveSettings(next)
+      setSettings(next)
+    },
+    [settings]
+  )
 
   return { settings, updateSettings }
 }

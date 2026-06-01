@@ -33,7 +33,12 @@ export function CsvImport({ onImported }: CsvImportProps) {
   return (
     <div className="space-y-3">
       <input ref={inputRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
-      <Button variant="outline" className="w-full" onClick={() => inputRef.current?.click()} disabled={loading}>
+      <Button
+        variant="outline"
+        className="w-full"
+        onClick={() => inputRef.current?.click()}
+        disabled={loading}
+      >
         {loading ? 'Importing…' : 'Import CSV'}
       </Button>
       {result && (
@@ -42,7 +47,9 @@ export function CsvImport({ onImported }: CsvImportProps) {
           {result.errors.length > 0 && (
             <ul className="mt-2 space-y-1">
               {result.errors.map((e, i) => (
-                <li key={i} className="text-destructive">{e}</li>
+                <li key={i} className="text-destructive">
+                  {e}
+                </li>
               ))}
             </ul>
           )}

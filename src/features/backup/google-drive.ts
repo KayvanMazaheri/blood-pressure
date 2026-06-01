@@ -27,7 +27,10 @@ export async function signInWithGoogle(clientId: string): Promise<string> {
       client_id: clientId,
       scope: SCOPES,
       callback: (response) => {
-        if (response.error) { reject(new Error(response.error)); return }
+        if (response.error) {
+          reject(new Error(response.error))
+          return
+        }
         accessToken = response.access_token!
         resolve(accessToken)
       },

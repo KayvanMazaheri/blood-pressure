@@ -11,7 +11,9 @@ export function StatCard({ label, value, unit, colorClass = '' }: StatCardProps)
       <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
       <p className={`mt-1 text-2xl font-bold tabular-nums ${colorClass}`}>
         {value ?? '—'}
-        {value != null && unit && <span className="ml-0.5 text-sm font-normal text-muted-foreground">{unit}</span>}
+        {value != null && unit && (
+          <span className="ml-0.5 text-sm font-normal text-muted-foreground">{unit}</span>
+        )}
       </p>
     </div>
   )
