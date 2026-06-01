@@ -5,6 +5,7 @@ import { TargetForm } from '@/features/settings/components/TargetForm'
 import { UnitToggle } from '@/features/settings/components/UnitToggle'
 import { DangerZone } from '@/features/settings/components/DangerZone'
 import { CsvImport } from '@/features/backup/components/CsvImport'
+import { BackupRestore } from '@/features/backup/components/BackupRestore'
 import { useSettings } from '@/features/settings/hooks/useSettings'
 import { useReadings } from '@/features/readings/hooks/useReadings'
 
@@ -33,6 +34,15 @@ export default function SettingsPage() {
             value={settings?.units.weight ?? 'kg'}
             onChange={(weight) => updateSettings({ units: { weight } })}
           />
+        </section>
+
+        <Separator />
+
+        <section>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Google Drive Backup
+          </h2>
+          <BackupRestore onRestored={reload} />
         </section>
 
         <Separator />
