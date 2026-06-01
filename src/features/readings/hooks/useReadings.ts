@@ -29,13 +29,23 @@ export function useReadings() {
       id: crypto.randomUUID(),
       source: 'manual',
     }
-    await dbAddReading(reading)
-    setReadings((prev) => [...prev, reading].sort((a, b) => a.timestamp - b.timestamp))
+    try {
+      await dbAddReading(reading)
+      setReadings((prev) => [...prev, reading].sort((a, b) => a.timestamp - b.timestamp))
+    } catch (e) {
+      setError(e instanceof Error ? e : new Error(String(e)))
+      throw e
+    }
   }, [])
 
   const deleteReading = useCallback(async (id: string) => {
-    await dbDeleteReading(id)
-    setReadings((prev) => prev.filter((r) => r.id !== id))
+    try {
+      await dbDeleteReading(id)
+      setReadings((prev) => prev.filter((r) => r.id !== id))
+    } catch (e) {
+      setError(e instanceof Error ? e : new Error(String(e)))
+      throw e
+    }
   }, [])
 
   return { readings, loading, error, addReading, deleteReading, reload: load }
