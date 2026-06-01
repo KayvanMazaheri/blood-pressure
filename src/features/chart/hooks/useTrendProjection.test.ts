@@ -3,9 +3,9 @@ import { computeTrendPoints } from './useTrendProjection'
 
 const base = Date.now()
 const readings = [
-  { timestamp: base, systolic: 120, diastolic: 80 },
-  { timestamp: base + 86_400_000, systolic: 122, diastolic: 81 },
-  { timestamp: base + 2 * 86_400_000, systolic: 124, diastolic: 82 },
+  { id: 'r1', timestamp: base, systolic: 120, diastolic: 80 },
+  { id: 'r2', timestamp: base + 86_400_000, systolic: 122, diastolic: 81 },
+  { id: 'r3', timestamp: base + 2 * 86_400_000, systolic: 124, diastolic: 82 },
 ]
 
 describe('computeTrendPoints', () => {
