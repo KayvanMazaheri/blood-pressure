@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,11 +24,16 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
   const [systolic, setSystolic] = useState('')
   const [diastolic, setDiastolic] = useState('')
   const [pulse, setPulse] = useState('')
-  const [timestamp, setTimestamp] = useState<number>(Date.now())
+  const [timestamp, setTimestamp] = useState<number>(0)
   const [editingTime, setEditingTime] = useState(false)
   const [context, setContext] = useState<ContextFields>({})
   const [errors, setErrors] = useState<Errors>({})
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setTimestamp(Date.now())
+  }, [])
 
   function validate(): Errors {
     const e: Errors = {}
@@ -46,7 +51,10 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
 
   async function handleSave() {
     const e = validate()
-    if (Object.keys(e).length > 0) { setErrors(e); return }
+    if (Object.keys(e).length > 0) {
+      setErrors(e)
+      return
+    }
     setSaving(true)
     try {
       await onSave({
@@ -57,8 +65,13 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
         ...context,
       })
       // reset
-      setSystolic(''); setDiastolic(''); setPulse(''); setTimestamp(Date.now())
-      setContext({}); setErrors({}); setEditingTime(false)
+      setSystolic('')
+      setDiastolic('')
+      setPulse('')
+      setTimestamp(Date.now())
+      setContext({})
+      setErrors({})
+      setEditingTime(false)
       onOpenChange(false)
     } finally {
       setSaving(false)
@@ -66,7 +79,10 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
   }
 
   const nowLabel = new Date(timestamp).toLocaleString(undefined, {
-    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   })
 
   const fields: Array<{
@@ -77,9 +93,30 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
     color: string
     autoFocus: boolean
   }> = [
-    { label: 'Systolic', value: systolic, set: setSystolic, error: errors.systolic, color: 'text-red-400', autoFocus: true },
-    { label: 'Diastolic', value: diastolic, set: setDiastolic, error: errors.diastolic, color: 'text-blue-400', autoFocus: false },
-    { label: 'Pulse', value: pulse, set: setPulse, error: errors.pulse, color: '', autoFocus: false },
+    {
+      label: 'Systolic',
+      value: systolic,
+      set: setSystolic,
+      error: errors.systolic,
+      color: 'text-red-400',
+      autoFocus: true,
+    },
+    {
+      label: 'Diastolic',
+      value: diastolic,
+      set: setDiastolic,
+      error: errors.diastolic,
+      color: 'text-blue-400',
+      autoFocus: false,
+    },
+    {
+      label: 'Pulse',
+      value: pulse,
+      set: setPulse,
+      error: errors.pulse,
+      color: '',
+      autoFocus: false,
+    },
   ]
 
   return (

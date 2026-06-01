@@ -17,13 +17,15 @@ export function TargetForm({ settings, onSave }: TargetFormProps) {
 
   useEffect(() => {
     if (settings) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSys(String(settings.target.systolic))
       setDia(String(settings.target.diastolic))
     }
   }, [settings])
 
   async function handleSave() {
-    const s = Number(sys), d = Number(dia)
+    const s = Number(sys),
+      d = Number(dia)
     if (isNaN(s) || isNaN(d) || s < 60 || s > 250 || d < 40 || d > 150) return
     setSaving(true)
     await onSave({ systolic: s, diastolic: d })
@@ -35,11 +37,21 @@ export function TargetForm({ settings, onSave }: TargetFormProps) {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label>Target Systolic</Label>
-          <Input type="number" value={sys} onChange={(e) => setSys(e.target.value)} className="mt-1" />
+          <Input
+            type="number"
+            value={sys}
+            onChange={(e) => setSys(e.target.value)}
+            className="mt-1"
+          />
         </div>
         <div>
           <Label>Target Diastolic</Label>
-          <Input type="number" value={dia} onChange={(e) => setDia(e.target.value)} className="mt-1" />
+          <Input
+            type="number"
+            value={dia}
+            onChange={(e) => setDia(e.target.value)}
+            className="mt-1"
+          />
         </div>
       </div>
       <Button onClick={handleSave} disabled={saving} className="w-full">

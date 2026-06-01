@@ -30,7 +30,13 @@ function CustomDot(props: { cx?: number; cy?: number; payload?: { isTrend?: bool
   return <circle cx={props.cx} cy={props.cy} r={4} fill="currentColor" stroke="none" />
 }
 
-export function BPChart({ readings, range: _range, targetSystolic, targetDiastolic }: BPChartProps) {
+export function BPChart({
+  readings,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  range: _range,
+  targetSystolic,
+  targetDiastolic,
+}: BPChartProps) {
   const { data, domain } = useChartData(readings)
 
   if (data.length === 0) {
@@ -128,9 +134,7 @@ export function BPChart({ readings, range: _range, targetSystolic, targetDiastol
                 <p className="font-medium">{formatTimestamp(d.timestamp, 'long')}</p>
                 {sys != null && <p className="text-red-400">{sys} mmHg sys</p>}
                 {dia != null && <p className="text-blue-400">{dia} mmHg dia</p>}
-                {zone && (
-                  <p className="text-muted-foreground">{d.isTrend ? 'Projected' : zone}</p>
-                )}
+                {zone && <p className="text-muted-foreground">{d.isTrend ? 'Projected' : zone}</p>}
               </div>
             )
           }}

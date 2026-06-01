@@ -21,7 +21,15 @@ export function useReadings() {
     }
   }, [])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      if (mounted) await load()
+    })()
+    return () => {
+      mounted = false
+    }
+  }, [load])
 
   const addReading = useCallback(async (data: NewReading) => {
     const reading: Reading = {

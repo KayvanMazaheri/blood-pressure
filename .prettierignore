@@ -1,0 +1,11 @@
+.next
+out
+build
+node_modules
+dist
+*.lock
+.git
+.env.local
+.env.*.local
+docs
+src/lib/crypto/index.js
