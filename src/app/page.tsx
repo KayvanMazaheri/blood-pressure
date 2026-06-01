@@ -22,7 +22,7 @@ export default function DashboardPage() {
   const { settings } = useSettings()
   const { avgSystolic, avgDiastolic, avgPulse, filtered } = useReadingStats(readings, range)
 
-  if (!loading && typeof window !== 'undefined' && !isKeyPresent() && readings.length === 0) {
+  if (!loading && error && typeof window !== 'undefined' && !isKeyPresent()) {
     return <KeyMissingError />
   }
 
@@ -41,10 +41,18 @@ export default function DashboardPage() {
       {/* Header */}
       <header className="sticky top-0 z-30 flex h-14 items-center border-b bg-background/95 px-4 backdrop-blur">
         <h1 className="flex-1 text-lg font-semibold">Blood Pressure</h1>
-        <Link href="/history" aria-label="History" className="inline-flex h-9 w-9 items-center justify-center rounded-md text-sm hover:bg-accent">
+        <Link
+          href="/history"
+          aria-label="History"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-sm hover:bg-accent"
+        >
           <History className="h-5 w-5" />
         </Link>
-        <Link href="/settings" aria-label="Settings" className="inline-flex h-9 w-9 items-center justify-center rounded-md text-sm hover:bg-accent">
+        <Link
+          href="/settings"
+          aria-label="Settings"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-sm hover:bg-accent"
+        >
           <Settings className="h-5 w-5" />
         </Link>
       </header>
@@ -61,34 +69,56 @@ export default function DashboardPage() {
 
         {/* Summary cards */}
         <div className="grid grid-cols-3 gap-3">
-          <StatCard label="Avg Sys" value={avgSystolic != null ? Math.round(avgSystolic) : null} unit="mmHg" colorClass="text-red-400" />
-          <StatCard label="Avg Dia" value={avgDiastolic != null ? Math.round(avgDiastolic) : null} unit="mmHg" colorClass="text-blue-400" />
-          <StatCard label="Avg Pulse" value={avgPulse != null ? Math.round(avgPulse) : null} unit="bpm" />
+          <StatCard
+            label="Avg Sys"
+            value={avgSystolic != null ? Math.round(avgSystolic) : null}
+            unit="mmHg"
+            colorClass="text-red-400"
+          />
+          <StatCard
+            label="Avg Dia"
+            value={avgDiastolic != null ? Math.round(avgDiastolic) : null}
+            unit="mmHg"
+            colorClass="text-blue-400"
+          />
+          <StatCard
+            label="Avg Pulse"
+            value={avgPulse != null ? Math.round(avgPulse) : null}
+            unit="bpm"
+          />
         </div>
 
         {/* Recent readings */}
         {recent.length > 0 && (
           <section>
-            <h2 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Recent</h2>
+            <h2 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Recent
+            </h2>
             <div className="divide-y divide-border rounded-xl border">
               {recent.map((r) => (
                 <div key={r.id} className="flex items-center justify-between px-4 py-3">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-lg font-bold tabular-nums text-red-400">{r.systolic}</span>
+                    <span className="text-lg font-bold tabular-nums text-red-400">
+                      {r.systolic}
+                    </span>
                     <span className="text-muted-foreground">/</span>
-                    <span className="text-lg font-bold tabular-nums text-blue-400">{r.diastolic}</span>
-                    {r.pulse && <span className="ml-2 text-sm text-muted-foreground">{r.pulse} bpm</span>}
+                    <span className="text-lg font-bold tabular-nums text-blue-400">
+                      {r.diastolic}
+                    </span>
+                    {r.pulse && (
+                      <span className="ml-2 text-sm text-muted-foreground">{r.pulse} bpm</span>
+                    )}
                   </div>
-                  <span className="text-xs text-muted-foreground">{formatTimestamp(r.timestamp, 'short')}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatTimestamp(r.timestamp, 'short')}
+                  </span>
                 </div>
               ))}
             </div>
           </section>
         )}
 
-        {loading && (
-          <p className="text-center text-sm text-muted-foreground">Loading…</p>
-        )}
+        {loading && <p className="text-center text-sm text-muted-foreground">Loading…</p>}
       </main>
 
       <FAB onClick={() => setFormOpen(true)} />
