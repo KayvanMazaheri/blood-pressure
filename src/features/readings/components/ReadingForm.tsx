@@ -58,7 +58,7 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
       })
       // reset
       setSystolic(''); setDiastolic(''); setPulse(''); setTimestamp(Date.now())
-      setContext({}); setErrors({})
+      setContext({}); setErrors({}); setEditingTime(false)
       onOpenChange(false)
     } finally {
       setSaving(false)
