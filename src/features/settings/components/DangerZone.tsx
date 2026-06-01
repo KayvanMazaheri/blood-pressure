@@ -11,7 +11,7 @@ export function DangerZone() {
     setBusy(true)
     await dbClearAllData()
     localStorage.removeItem('bp_enc_key')
-    window.location.href = '/'
+    window.location.reload()
   }
 
   return (
