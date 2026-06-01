@@ -6,6 +6,8 @@ export interface ChartPoint {
   timestamp: number
   systolic?: number
   diastolic?: number
+  trendSystolic?: number
+  trendDiastolic?: number
   isTrend?: boolean
 }
 
@@ -26,14 +28,23 @@ export function useChartData(readings: Reading[]): {
     }))
 
     const trendPoints = computeTrendPoints(readings)
-    const trend: ChartPoint[] = trendPoints
-      ? trendPoints.map((t) => ({
-          timestamp: t.timestamp,
-          systolic: t.systolic,
-          diastolic: t.diastolic,
-          isTrend: true,
-        }))
-      : []
+    const trend: ChartPoint[] =
+      trendPoints && readings.length > 0
+        ? [
+            // Bridge point: copies last real reading into trend keys so lines connect
+            {
+              timestamp: readings[readings.length - 1].timestamp,
+              trendSystolic: readings[readings.length - 1].systolic,
+              trendDiastolic: readings[readings.length - 1].diastolic,
+            },
+            ...trendPoints.map((t) => ({
+              timestamp: t.timestamp,
+              trendSystolic: t.systolic,
+              trendDiastolic: t.diastolic,
+              isTrend: true,
+            })),
+          ]
+        : []
 
     const allSys = readings.map((r) => r.systolic)
     const allDia = readings.map((r) => r.diastolic)

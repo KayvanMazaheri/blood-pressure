@@ -113,6 +113,28 @@ export function BPChart({
           connectNulls
         />
 
+        {/* Trend projection — dashed */}
+        <Line
+          dataKey="trendSystolic"
+          stroke="#f87171"
+          strokeWidth={1.5}
+          strokeDasharray="6 4"
+          dot={false}
+          activeDot={false}
+          connectNulls
+          legendType="none"
+        />
+        <Line
+          dataKey="trendDiastolic"
+          stroke="#60a5fa"
+          strokeWidth={1.5}
+          strokeDasharray="6 4"
+          dot={false}
+          activeDot={false}
+          connectNulls
+          legendType="none"
+        />
+
         <Tooltip
           content={({ active, payload }) => {
             if (!active || !payload?.length) return null
