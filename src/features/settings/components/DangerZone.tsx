@@ -1,7 +1,10 @@
+// src/features/settings/components/DangerZone.tsx
 'use client'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { dbClearAllData } from '@/lib/db/settings'
+import { isTelegram } from '@/lib/telegram/context'
+import { getSyncManager } from '@/lib/telegram/sync'
 
 export function DangerZone() {
   const [busy, setBusy] = useState(false)
@@ -10,7 +13,11 @@ export function DangerZone() {
     if (!confirm('Delete ALL readings and settings permanently? This cannot be undone.')) return
     setBusy(true)
     await dbClearAllData()
-    localStorage.removeItem('bp_enc_key')
+    if (isTelegram()) {
+      await getSyncManager().clearCloudData()
+    } else {
+      localStorage.removeItem('bp_enc_key')
+    }
     window.location.reload()
   }
 

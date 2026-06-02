@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Trash2, ChevronDown, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { haptic } from '@/lib/telegram/haptics'
 import { formatTimestamp } from '@/lib/utils/date'
 import type { Reading } from '@/features/readings/types'
 
@@ -43,6 +44,7 @@ export function ReadingCard({ reading, onDelete, weightUnit }: ReadingCardProps)
 
   async function handleDelete() {
     if (!confirm('Delete this reading?')) return
+    haptic('warning')
     setDeleting(true)
     await onDelete(reading.id)
   }

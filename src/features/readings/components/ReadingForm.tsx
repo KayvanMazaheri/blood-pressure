@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
+import { haptic } from '@/lib/telegram/haptics'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { BottomSheet } from '@/components/BottomSheet'
@@ -64,6 +65,7 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
         pulse: pulse ? Number(pulse) : undefined,
         ...context,
       })
+      haptic('success')
       // reset
       setSystolic('')
       setDiastolic('')
