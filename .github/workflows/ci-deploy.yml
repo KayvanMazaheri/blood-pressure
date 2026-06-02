@@ -69,6 +69,9 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
+          NEXT_PUBLIC_TELEGRAM_BOT_NAME: ${{ secrets.NEXT_PUBLIC_TELEGRAM_BOT_NAME }}
+          NEXT_PUBLIC_TELEGRAM_APP_NAME: ${{ secrets.NEXT_PUBLIC_TELEGRAM_APP_NAME }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
