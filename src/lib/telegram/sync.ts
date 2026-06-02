@@ -66,6 +66,7 @@ export function csGetAllKeys(): Promise<string[]> {
 export const SYNC_META_KEY = 'bp_sync_meta'
 export const SYNC_TOMBSTONES_KEY = 'bp_sync_tombstones'
 export const SYNC_CHUNK_PREFIX = 'bp_sync_chunk_'
+export const LAST_SYNC_TS_KEY = 'bp_last_sync_at'
 const CHUNK_SIZE = 3800
 
 // ── Types (exported for SyncManager) ─────────────────────────────────────────
@@ -99,6 +100,8 @@ export class SyncManager {
 
   constructor() {
     this._deviceId = this._getOrCreateDeviceId()
+    const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(LAST_SYNC_TS_KEY) : null
+    this._lastSyncAt = stored ? Number(stored) : null
   }
 
   get isSyncing() {
@@ -190,6 +193,7 @@ export class SyncManager {
       if (staleKeys.length > 0) await csRemove(staleKeys)
 
       this._lastSyncAt = meta.lastSyncAt
+      localStorage.setItem(LAST_SYNC_TS_KEY, String(meta.lastSyncAt))
     } catch (err) {
       this._error = err instanceof Error ? err.message : 'Sync failed'
       throw err
@@ -219,21 +223,24 @@ export class SyncManager {
       const payload = JSON.parse(json) as SyncPayload
 
       const tombstones = await this.getTombstones()
-      const tombstoneSet = new Set(tombstones)
 
       const localReadings = await dbGetAllReadings()
-      const localIds = new Set(localReadings.map((r) => r.id))
+      const merged = mergeReadings(localReadings, payload.readings, tombstones)
 
-      // Add cloud readings not present locally (and not tombstoned)
-      for (const cloudReading of payload.readings) {
-        if (!tombstoneSet.has(cloudReading.id) && !localIds.has(cloudReading.id)) {
-          await dbAddReading(cloudReading)
+      // Add readings that are in merged but not in local
+      const localIds = new Set(localReadings.map((r) => r.id))
+      for (const reading of merged) {
+        if (!localIds.has(reading.id)) {
+          await dbAddReading(reading)
         }
       }
 
-      // Apply tombstones to local DB
-      for (const id of tombstones) {
-        if (localIds.has(id)) await dbDeleteReading(id)
+      // Remove readings that are in local but not in merged (tombstoned)
+      const mergedIds = new Set(merged.map((r) => r.id))
+      for (const localReading of localReadings) {
+        if (!mergedIds.has(localReading.id)) {
+          await dbDeleteReading(localReading.id)
+        }
       }
 
       // Settings: cloud wins if this is the authoritative sync
@@ -242,6 +249,7 @@ export class SyncManager {
       }
 
       this._lastSyncAt = meta.lastSyncAt
+      localStorage.setItem(LAST_SYNC_TS_KEY, String(meta.lastSyncAt))
     } catch (err) {
       this._error = err instanceof Error ? err.message : 'Sync failed'
       throw err

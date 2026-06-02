@@ -11,6 +11,7 @@ export function useSync() {
 
   useEffect(() => {
     if (!isTelegram()) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLastSyncAt(getSyncManager().lastSyncAt)
   }, [])
 
