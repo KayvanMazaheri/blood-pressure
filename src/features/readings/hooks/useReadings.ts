@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { dbAddReading, dbGetAllReadings, dbDeleteReading } from '@/lib/db/readings'
 import type { Reading } from '@/features/readings/types'
+import { isTelegram } from '@/lib/telegram/context'
+import { getSyncManager } from '@/lib/telegram/sync'
 
 type NewReading = Omit<Reading, 'id' | 'source'>
 
@@ -40,6 +42,7 @@ export function useReadings() {
     try {
       await dbAddReading(reading)
       setReadings((prev) => [...prev, reading].sort((a, b) => a.timestamp - b.timestamp))
+      if (isTelegram()) getSyncManager().schedulePush(30_000)
     } catch (e) {
       setError(e instanceof Error ? e : new Error(String(e)))
       throw e
@@ -50,6 +53,10 @@ export function useReadings() {
     try {
       await dbDeleteReading(id)
       setReadings((prev) => prev.filter((r) => r.id !== id))
+      if (isTelegram()) {
+        await getSyncManager().addTombstone(id)
+        getSyncManager().schedulePush(5_000)
+      }
     } catch (e) {
       setError(e instanceof Error ? e : new Error(String(e)))
       throw e

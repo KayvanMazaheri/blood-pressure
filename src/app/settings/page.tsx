@@ -9,6 +9,7 @@ import { BackupRestore } from '@/features/backup/components/BackupRestore'
 import { useSettings } from '@/features/settings/hooks/useSettings'
 import { useReadings } from '@/features/readings/hooks/useReadings'
 import { useTelegramBackButton } from '@/lib/telegram/hooks/useTelegramBackButton'
+import { SyncSettings } from '@/features/sync/components/SyncSettings'
 
 export default function SettingsPage() {
   useTelegramBackButton(true)
@@ -58,6 +59,15 @@ export default function SettingsPage() {
             (optional).
           </p>
           <CsvImport onImported={reload} />
+        </section>
+
+        <Separator />
+
+        <section>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Telegram Sync
+          </h2>
+          <SyncSettings />
         </section>
 
         <Separator />
