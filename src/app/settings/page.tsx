@@ -10,6 +10,7 @@ import { useSettings } from '@/features/settings/hooks/useSettings'
 import { useReadings } from '@/features/readings/hooks/useReadings'
 import { useTelegramBackButton } from '@/lib/telegram/hooks/useTelegramBackButton'
 import { SyncSettings } from '@/features/sync/components/SyncSettings'
+import { TelegramConnect } from '@/features/settings/components/TelegramConnect'
 
 export default function SettingsPage() {
   useTelegramBackButton(true)
@@ -68,6 +69,15 @@ export default function SettingsPage() {
             Telegram Sync
           </h2>
           <SyncSettings />
+        </section>
+
+        <Separator />
+
+        <section>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Use in Telegram
+          </h2>
+          <TelegramConnect />
         </section>
 
         <Separator />
