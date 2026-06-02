@@ -12,14 +12,14 @@ describe('isTelegram', () => {
 
   it('returns false when initDataUnsafe.user is absent', () => {
     ;(window as Window & { Telegram: unknown }).Telegram = {
-      WebApp: { initDataUnsafe: {} },
+      WebApp: { initDataUnsafe: {} } as unknown as TelegramWebApp,
     }
     expect(isTelegram()).toBe(false)
   })
 
   it('returns true when user is present in initDataUnsafe', () => {
     ;(window as Window & { Telegram: unknown }).Telegram = {
-      WebApp: { initDataUnsafe: { user: { id: 1, first_name: 'Test' } } },
+      WebApp: { initDataUnsafe: { user: { id: 1, first_name: 'Test' } } } as unknown as TelegramWebApp,
     }
     expect(isTelegram()).toBe(true)
   })
@@ -37,7 +37,7 @@ describe('getTelegramUser', () => {
   it('returns user object when in Telegram', () => {
     const user = { id: 42, first_name: 'Alice', username: 'alice' }
     ;(window as Window & { Telegram: unknown }).Telegram = {
-      WebApp: { initDataUnsafe: { user } },
+      WebApp: { initDataUnsafe: { user } } as unknown as TelegramWebApp,
     }
     expect(getTelegramUser()).toEqual(user)
   })
@@ -53,7 +53,7 @@ describe('getTelegramWebApp', () => {
   })
 
   it('returns WebApp when present', () => {
-    const webApp = { initDataUnsafe: { user: { id: 1, first_name: 'T' } } }
+    const webApp = { initDataUnsafe: { user: { id: 1, first_name: 'T' } } } as unknown as TelegramWebApp
     ;(window as Window & { Telegram: unknown }).Telegram = { WebApp: webApp }
     expect(getTelegramWebApp()).toBe(webApp)
   })
