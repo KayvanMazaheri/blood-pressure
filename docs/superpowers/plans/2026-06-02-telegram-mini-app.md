@@ -966,12 +966,6 @@ export function csGetMany(keys: string[]): Promise<Record<string, string>> {
   })
 }
 
-export function csGetMany(keys: string[]): Promise<Record<string, string>> {
-  return new Promise((resolve) => {
-    cs().getItems(keys, (err, vals) => resolve(err ? {} : vals))
-  })
-}
-
 export function csRemove(keys: string[]): Promise<void> {
   return new Promise((resolve, reject) => {
     cs().removeItems(keys, (err) => (err ? reject(err) : resolve()))
