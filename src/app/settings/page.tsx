@@ -8,8 +8,10 @@ import { CsvImport } from '@/features/backup/components/CsvImport'
 import { BackupRestore } from '@/features/backup/components/BackupRestore'
 import { useSettings } from '@/features/settings/hooks/useSettings'
 import { useReadings } from '@/features/readings/hooks/useReadings'
+import { useTelegramBackButton } from '@/lib/telegram/hooks/useTelegramBackButton'
 
 export default function SettingsPage() {
+  useTelegramBackButton(true)
   const { settings, updateSettings } = useSettings()
   const { reload } = useReadings()
 

@@ -7,8 +7,10 @@ import { ReadingList } from '@/features/readings/components/ReadingList'
 import { useReadings } from '@/features/readings/hooks/useReadings'
 import { useSettings } from '@/features/settings/hooks/useSettings'
 import { exportToCSV, exportToBpdata } from '@/features/backup/export'
+import { useTelegramBackButton } from '@/lib/telegram/hooks/useTelegramBackButton'
 
 export default function HistoryPage() {
+  useTelegramBackButton(true)
   const { readings, deleteReading } = useReadings()
   const { settings } = useSettings()
   const [exporting, setExporting] = useState(false)
