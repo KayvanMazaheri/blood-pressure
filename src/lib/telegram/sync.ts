@@ -1,4 +1,8 @@
 import type { Reading, Settings } from '@/features/readings/types'
+import { compressString, decompressString } from '@/lib/utils/compression'
+import { encrypt, decrypt } from '@/lib/crypto'
+import { dbAddReading, dbGetAllReadings, dbDeleteReading } from '@/lib/db/readings'
+import { dbGetSettings, dbSaveSettings } from '@/lib/db/settings'
 
 // ── Pure logic ────────────────────────────────────────────────────────────────
 
@@ -85,3 +89,205 @@ export function chunkString(str: string, size: number): string[] {
 }
 
 export { CHUNK_SIZE }
+
+export class SyncManager {
+  private _isSyncing = false
+  private _lastSyncAt: number | null = null
+  private _error: string | null = null
+  private _deviceId: string
+  private _pushTimer: ReturnType<typeof setTimeout> | null = null
+
+  constructor() {
+    this._deviceId = this._getOrCreateDeviceId()
+  }
+
+  get isSyncing() {
+    return this._isSyncing
+  }
+  get lastSyncAt() {
+    return this._lastSyncAt
+  }
+  get error() {
+    return this._error
+  }
+
+  private _getOrCreateDeviceId(): string {
+    const key = 'bp_device_id'
+    let id = localStorage.getItem(key)
+    if (!id) {
+      id = crypto.randomUUID()
+      localStorage.setItem(key, id)
+    }
+    return id
+  }
+
+  async getMeta(): Promise<SyncMeta | null> {
+    const raw = await csGet(SYNC_META_KEY)
+    if (!raw) return null
+    try {
+      return JSON.parse(raw) as SyncMeta
+    } catch {
+      return null
+    }
+  }
+
+  async getTombstones(): Promise<string[]> {
+    const raw = await csGet(SYNC_TOMBSTONES_KEY)
+    if (!raw) return []
+    try {
+      return JSON.parse(raw) as string[]
+    } catch {
+      return []
+    }
+  }
+
+  async addTombstone(readingId: string): Promise<void> {
+    const existing = await this.getTombstones()
+    if (!existing.includes(readingId)) {
+      existing.push(readingId)
+      await csSet(SYNC_TOMBSTONES_KEY, JSON.stringify(existing))
+    }
+  }
+
+  async push(): Promise<void> {
+    if (this._isSyncing) return
+    this._isSyncing = true
+    this._error = null
+
+    try {
+      const [readings, settings] = await Promise.all([
+        dbGetAllReadings(),
+        dbGetSettings(),
+      ])
+
+      const payload: SyncPayload = { readings, settings }
+      const json = JSON.stringify(payload)
+      const compressed = await compressString(json)
+      const encryptedBase64 = await encrypt(compressed)
+      const chunks = chunkString(encryptedBase64, CHUNK_SIZE)
+
+      const meta: SyncMeta = {
+        version: 1,
+        lastSyncAt: Date.now(),
+        deviceId: this._deviceId,
+        chunkCount: chunks.length,
+      }
+
+      await csSet(SYNC_META_KEY, JSON.stringify(meta))
+      await Promise.all(
+        chunks.map((chunk, i) =>
+          csSet(`${SYNC_CHUNK_PREFIX}${String(i).padStart(3, '0')}`, chunk),
+        ),
+      )
+
+      // Clean up stale chunks from a prior push that had more chunks
+      const allKeys = await csGetAllKeys()
+      const staleKeys = allKeys.filter((k) => {
+        if (!k.startsWith(SYNC_CHUNK_PREFIX)) return false
+        const idx = parseInt(k.slice(SYNC_CHUNK_PREFIX.length), 10)
+        return idx >= chunks.length
+      })
+      if (staleKeys.length > 0) await csRemove(staleKeys)
+
+      this._lastSyncAt = meta.lastSyncAt
+    } catch (err) {
+      this._error = err instanceof Error ? err.message : 'Sync failed'
+      throw err
+    } finally {
+      this._isSyncing = false
+    }
+  }
+
+  async pull(): Promise<void> {
+    if (this._isSyncing) return
+    this._isSyncing = true
+    this._error = null
+
+    try {
+      const meta = await this.getMeta()
+      if (!meta) return
+
+      const chunkKeys = Array.from(
+        { length: meta.chunkCount },
+        (_, i) => `${SYNC_CHUNK_PREFIX}${String(i).padStart(3, '0')}`,
+      )
+      const chunkMap = await csGetMany(chunkKeys)
+      const encryptedBase64 = chunkKeys.map((k) => chunkMap[k] ?? '').join('')
+
+      const compressed = await decrypt(encryptedBase64)
+      const json = await decompressString(compressed)
+      const payload = JSON.parse(json) as SyncPayload
+
+      const tombstones = await this.getTombstones()
+      const tombstoneSet = new Set(tombstones)
+
+      const localReadings = await dbGetAllReadings()
+      const localIds = new Set(localReadings.map((r) => r.id))
+
+      // Add cloud readings not present locally (and not tombstoned)
+      for (const cloudReading of payload.readings) {
+        if (!tombstoneSet.has(cloudReading.id) && !localIds.has(cloudReading.id)) {
+          await dbAddReading(cloudReading)
+        }
+      }
+
+      // Apply tombstones to local DB
+      for (const id of tombstones) {
+        if (localIds.has(id)) await dbDeleteReading(id)
+      }
+
+      // Settings: cloud wins if this is the authoritative sync
+      if (payload.settings && meta.lastSyncAt > (this._lastSyncAt ?? 0)) {
+        await dbSaveSettings(payload.settings)
+      }
+
+      this._lastSyncAt = meta.lastSyncAt
+    } catch (err) {
+      this._error = err instanceof Error ? err.message : 'Sync failed'
+      throw err
+    } finally {
+      this._isSyncing = false
+    }
+  }
+
+  schedulePush(debounceMs: number): void {
+    if (this._pushTimer) clearTimeout(this._pushTimer)
+    this._pushTimer = setTimeout(() => {
+      this.push().catch(() => {})
+      this._pushTimer = null
+    }, debounceMs)
+  }
+
+  async shouldPullOnOpen(): Promise<boolean> {
+    const meta = await this.getMeta()
+    if (!meta) return false
+    const localReadings = await dbGetAllReadings()
+    if (localReadings.length === 0) return true
+    return meta.lastSyncAt > (this._lastSyncAt ?? 0)
+  }
+
+  async clearCloudData(): Promise<void> {
+    const allKeys = await csGetAllKeys()
+    const syncKeys = allKeys.filter(
+      (k) =>
+        k === SYNC_META_KEY ||
+        k === SYNC_TOMBSTONES_KEY ||
+        k.startsWith(SYNC_CHUNK_PREFIX),
+    )
+    if (syncKeys.length > 0) await csRemove(syncKeys)
+    const { TelegramCloudKeyProvider } = await import('./storage')
+    const keyProvider = new TelegramCloudKeyProvider()
+    await keyProvider.removeKey()
+  }
+}
+
+let _instance: SyncManager | null = null
+
+export function getSyncManager(): SyncManager {
+  if (!_instance) _instance = new SyncManager()
+  return _instance
+}
+
+export function resetSyncManager(): void {
+  _instance = null
+}
