@@ -1,7 +1,7 @@
+// src/lib/crypto/index.test.ts
 import { describe, it, expect, beforeEach } from 'vitest'
-import { encrypt, decrypt, clearKeyCache } from './index'
+import { encrypt, decrypt, clearKeyCache, isKeyPresent } from './index'
 
-// jsdom provides crypto.subtle via Web Crypto API polyfill in Node 20+
 describe('crypto', () => {
   beforeEach(() => {
     localStorage.clear()
@@ -17,9 +17,8 @@ describe('crypto', () => {
   })
 
   it('produces different ciphertext each time (random IV)', async () => {
-    const data = 'hello'
-    const a = await encrypt(data)
-    const b = await encrypt(data)
+    const a = await encrypt('hello')
+    const b = await encrypt('hello')
     expect(a).not.toBe(b)
   })
 
@@ -30,5 +29,14 @@ describe('crypto', () => {
     await encrypt('test2')
     const key2 = localStorage.getItem('bp_enc_key')
     expect(key1).toBe(key2)
+  })
+
+  it('isKeyPresent returns false before first use', async () => {
+    expect(await isKeyPresent()).toBe(false)
+  })
+
+  it('isKeyPresent returns true after first encrypt', async () => {
+    await encrypt('data')
+    expect(await isKeyPresent()).toBe(true)
   })
 })

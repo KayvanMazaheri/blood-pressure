@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { History, Settings } from 'lucide-react'
 import { FAB } from '@/components/FAB'
@@ -18,11 +18,16 @@ import type { TimeRange } from '@/features/readings/types'
 export default function DashboardPage() {
   const [range, setRange] = useState<TimeRange>('1m')
   const [formOpen, setFormOpen] = useState(false)
+  const [keyPresent, setKeyPresent] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    isKeyPresent().then(setKeyPresent)
+  }, [])
   const { readings, loading, error, addReading } = useReadings()
   const { settings } = useSettings()
   const { avgSystolic, avgDiastolic, avgPulse, filtered } = useReadingStats(readings, range)
 
-  if (!loading && error && typeof window !== 'undefined' && !isKeyPresent()) {
+  if (!loading && error && keyPresent === false) {
     return <KeyMissingError />
   }
 
