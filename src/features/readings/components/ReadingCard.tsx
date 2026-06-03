@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Trash2, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { haptic } from '@/lib/telegram/haptics'
+import { tgConfirm } from '@/lib/telegram/dialogs'
 import { formatTimestamp } from '@/lib/utils/date'
 import { classifyBP, ahaColor } from '@/lib/utils/aha'
 import type { Reading } from '@/features/readings/types'
@@ -37,7 +38,8 @@ export function ReadingCard({ reading, onDelete, weightUnit }: ReadingCardProps)
   )
 
   async function handleDelete() {
-    if (!confirm('Delete this reading?')) return
+    const confirmed = await tgConfirm('Delete this reading?')
+    if (!confirmed) return
     haptic('warning')
     setDeleting(true)
     await onDelete(reading.id)
