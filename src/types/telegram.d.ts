@@ -1,3 +1,4 @@
+// src/types/telegram.d.ts
 export {}
 
 declare global {
@@ -11,7 +12,12 @@ declare global {
     destructive_text_color?: string
     accent_text_color?: string
     section_bg_color?: string
+    section_header_text_color?: string
+    section_separator_color?: string
     link_color?: string
+    subtitle_text_color?: string
+    header_bg_color?: string
+    bottom_bar_bg_color?: string
   }
 
   interface TelegramHapticFeedback {
@@ -42,10 +48,33 @@ declare global {
     hideProgress(): void
   }
 
+  interface TelegramSettingsButton {
+    isVisible: boolean
+    show(): void
+    hide(): void
+    onClick(fn: () => void): void
+    offClick(fn: () => void): void
+  }
+
+  interface TelegramPopupButton {
+    id?: string
+    type?: 'default' | 'ok' | 'close' | 'cancel' | 'destructive'
+    text?: string
+  }
+
+  interface TelegramPopupParams {
+    title?: string
+    message: string
+    buttons?: TelegramPopupButton[]
+  }
+
   interface TelegramCloudStorage {
     setItem(key: string, value: string, cb?: (err: Error | null) => void): void
     getItem(key: string, cb: (err: Error | null, value: string) => void): void
-    getItems(keys: string[], cb: (err: Error | null, values: Record<string, string>) => void): void
+    getItems(
+      keys: string[],
+      cb: (err: Error | null, values: Record<string, string>) => void,
+    ): void
     removeItem(key: string, cb?: (err: Error | null) => void): void
     removeItems(keys: string[], cb?: (err: Error | null) => void): void
     getKeys(cb: (err: Error | null, keys: string[]) => void): void
@@ -55,10 +84,11 @@ declare global {
     version: string
     platform: string
     colorScheme: 'light' | 'dark'
-    themeParams: TelegramThemeParams
     isExpanded: boolean
+    isActive: boolean
     viewportHeight: number
     viewportStableHeight: number
+    themeParams: TelegramThemeParams
     initData: string
     initDataUnsafe: {
       user?: {
@@ -74,10 +104,19 @@ declare global {
     HapticFeedback: TelegramHapticFeedback
     BackButton: TelegramBackButton
     MainButton: TelegramMainButton
+    SettingsButton: TelegramSettingsButton
     CloudStorage: TelegramCloudStorage
     ready(): void
     expand(): void
     close(): void
+    setHeaderColor(color: string): void
+    setBackgroundColor(color: string): void
+    setBottomBarColor(color: string): void
+    showAlert(message: string, callback?: () => void): void
+    showConfirm(message: string, callback?: (confirmed: boolean) => void): void
+    showPopup(params: TelegramPopupParams, callback?: (buttonId: string) => void): void
+    addToHomeScreen(): void
+    checkHomeScreenStatus(callback: (status: 'added' | 'missed' | 'unknown') => void): void
     onEvent(eventType: string, eventHandler: () => void): void
     offEvent(eventType: string, eventHandler: () => void): void
   }
