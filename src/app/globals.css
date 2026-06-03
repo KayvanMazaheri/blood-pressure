@@ -2,7 +2,7 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark *), &:is([data-color-scheme="dark"] *));
 
 @theme inline {
   --color-background: var(--background);
@@ -127,4 +127,33 @@
   html {
     @apply font-sans;
   }
+}
+
+[data-shell='telegram'] {
+  --background: var(--tg-theme-bg-color);
+  --foreground: var(--tg-theme-text-color);
+  --card: var(--tg-theme-section-bg-color, var(--tg-theme-secondary-bg-color));
+  --card-foreground: var(--tg-theme-text-color);
+  --popover: var(--tg-theme-section-bg-color, var(--tg-theme-secondary-bg-color));
+  --popover-foreground: var(--tg-theme-text-color);
+  --primary: var(--tg-theme-button-color);
+  --primary-foreground: var(--tg-theme-button-text-color);
+  --secondary: var(--tg-theme-secondary-bg-color);
+  --secondary-foreground: var(--tg-theme-text-color);
+  --muted: var(--tg-theme-secondary-bg-color);
+  --muted-foreground: var(--tg-theme-subtitle-text-color, var(--tg-theme-hint-color));
+  --accent: var(--tg-theme-secondary-bg-color);
+  --accent-foreground: var(--tg-theme-text-color);
+  --destructive: var(--tg-theme-destructive-text-color);
+  --border: var(--tg-theme-section-separator-color);
+  --input: var(--tg-theme-section-separator-color);
+  --ring: var(--tg-theme-accent-text-color, var(--tg-theme-button-color));
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+[data-shell='telegram'] body {
+  min-height: var(--tg-viewport-stable-height, 100dvh);
 }
