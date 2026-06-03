@@ -28,6 +28,20 @@ declare global {
     offClick(fn: () => void): void
   }
 
+  interface TelegramMainButton {
+    isVisible: boolean
+    text: string
+    setText(text: string): void
+    show(): void
+    hide(): void
+    onClick(fn: () => void): void
+    offClick(fn: () => void): void
+    enable(): void
+    disable(): void
+    showProgress(leaveActive?: boolean): void
+    hideProgress(): void
+  }
+
   interface TelegramCloudStorage {
     setItem(key: string, value: string, cb?: (err: Error | null) => void): void
     getItem(key: string, cb: (err: Error | null, value: string) => void): void
@@ -62,6 +76,7 @@ declare global {
     }
     HapticFeedback: TelegramHapticFeedback
     BackButton: TelegramBackButton
+    MainButton: TelegramMainButton
     CloudStorage: TelegramCloudStorage
     ready(): void
     expand(): void

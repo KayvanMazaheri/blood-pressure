@@ -31,6 +31,9 @@ export function BottomNav() {
               onClick={() => haptic('selection')}
               aria-label={label}
             >
+              <span className="mb-0.5 flex h-1 w-full justify-center">
+                {isActive && <span className="h-1 w-1 rounded-full bg-primary" />}
+              </span>
               <Icon className="h-5 w-5" />
               <span>{label}</span>
             </Link>

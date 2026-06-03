@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { ChevronDown } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -30,17 +29,26 @@ export function HealthContextFields({ value, onChange }: HealthContextFieldsProp
     onChange({ ...value, [key]: val })
   }
 
+  const filledCount = (Object.values(value) as unknown[]).filter((v) => v != null).length
+  const toggleLabel =
+    filledCount > 0
+      ? `Health context · ${filledCount} field${filledCount !== 1 ? 's' : ''}`
+      : 'Add health context'
+
   return (
     <div>
-      <Button
+      <button
         type="button"
-        variant="ghost"
-        className="w-full justify-between text-muted-foreground"
+        className="flex min-h-[44px] w-full items-center justify-between rounded-lg px-3 text-sm text-muted-foreground hover:bg-muted/50 transition-colors"
         onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-label={toggleLabel}
       >
-        <span>+ Add health context</span>
-        {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-      </Button>
+        <span>{toggleLabel}</span>
+        <ChevronDown
+          className={`h-4 w-4 transition-transform motion-safe:duration-150 ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
 
       {open && (
         <div className="mt-3 grid gap-4">

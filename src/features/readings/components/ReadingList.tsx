@@ -30,13 +30,13 @@ export function ReadingList({ readings, onDelete, weightUnit }: ReadingListProps
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       {Array.from(grouped.entries()).map(([month, items]) => (
         <section key={month}>
-          <h2 className="mb-1 px-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <h2 className="px-4 pb-1 pt-4 text-xs uppercase tracking-wider text-muted-foreground">
             {month}
           </h2>
-          <div className="divide-y divide-border rounded-xl border">
+          <div className="divide-y divide-border rounded-xl border overflow-hidden">
             {items.map((r) => (
               <ReadingCard key={r.id} reading={r} onDelete={onDelete} weightUnit={weightUnit} />
             ))}

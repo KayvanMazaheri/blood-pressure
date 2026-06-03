@@ -6,7 +6,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { BottomSheet } from '@/components/BottomSheet'
 import { HealthContextFields } from './HealthContextFields'
+import { AHABadge } from './AHABadge'
 import { VALIDATION } from '@/features/readings/types'
+import { isTelegram } from '@/lib/telegram/context'
+import { useMainButton } from '@/lib/telegram/hooks/useMainButton'
 import type { Reading } from '@/features/readings/types'
 
 type NewReadingData = Omit<Reading, 'id' | 'source'>
@@ -66,7 +69,6 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
         ...context,
       })
       haptic('success')
-      // reset
       setSystolic('')
       setDiastolic('')
       setPulse('')
@@ -79,6 +81,8 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
       setSaving(false)
     }
   }
+
+  useMainButton({ text: 'Save Reading', visible: open, onClick: handleSave })
 
   const nowLabel = new Date(timestamp).toLocaleString(undefined, {
     month: 'short',
@@ -146,6 +150,9 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
           ))}
         </div>
 
+        {/* Live AHA classification badge */}
+        <AHABadge systolic={systolic} diastolic={diastolic} />
+
         {/* Timestamp */}
         <div className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm">
           {editingTime ? (
@@ -169,7 +176,11 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
 
         <HealthContextFields value={context} onChange={setContext} />
 
-        <Button onClick={handleSave} disabled={saving} className="w-full">
+        <Button
+          onClick={handleSave}
+          disabled={saving}
+          className={`w-full${isTelegram() ? ' hidden' : ''}`}
+        >
           {saving ? 'Saving…' : 'Save Reading'}
         </Button>
       </div>

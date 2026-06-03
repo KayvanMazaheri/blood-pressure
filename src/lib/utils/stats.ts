@@ -13,6 +13,18 @@ interface RegressionResult {
   predict: (x: number) => number
 }
 
+export interface TrendResult {
+  direction: 'up' | 'down' | 'stable'
+  delta: number | null
+}
+
+export function computeTrend(current: number | null, previous: number | null): TrendResult {
+  if (current == null || previous == null) return { direction: 'stable', delta: null }
+  const delta = Math.round(current - previous)
+  if (Math.abs(delta) <= 2) return { direction: 'stable', delta: null }
+  return { direction: delta > 0 ? 'up' : 'down', delta: Math.abs(delta) }
+}
+
 export function linearRegression(points: Point[]): RegressionResult | null {
   if (points.length < 3) return null
   const n = points.length
