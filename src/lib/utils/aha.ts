@@ -9,27 +9,39 @@ export function classifyBP(systolic: number, diastolic: number): AHAClass {
 
 export function ahaLabel(cls: AHAClass): string {
   switch (cls) {
-    case 'normal': return 'NORMAL'
-    case 'elevated': return 'ELEVATED'
-    case 'stage1': return 'HYPERTENSION · STAGE 1'
-    case 'stage2': return 'HYPERTENSION · STAGE 2'
+    case 'normal':
+      return 'NORMAL'
+    case 'elevated':
+      return 'ELEVATED'
+    case 'stage1':
+      return 'HYPERTENSION · STAGE 1'
+    case 'stage2':
+      return 'HYPERTENSION · STAGE 2'
   }
 }
 
 export function ahaMessage(cls: AHAClass): string {
   switch (cls) {
-    case 'normal': return 'Your pressure looks great'
-    case 'elevated': return 'Worth keeping an eye on'
-    case 'stage1': return 'Consider talking to your doctor'
-    case 'stage2': return 'Please consult your doctor'
+    case 'normal':
+      return 'Your pressure looks great'
+    case 'elevated':
+      return 'Worth keeping an eye on'
+    case 'stage1':
+      return 'Consider talking to your doctor'
+    case 'stage2':
+      return 'Please consult your doctor'
   }
 }
 
 export function ahaColor(cls: AHAClass): string {
   switch (cls) {
-    case 'normal': return '#34d399'
-    case 'elevated': return '#fbbf24'
-    case 'stage1': return '#f97316'
-    case 'stage2': return '#fb7185'
+    case 'normal':
+      return '#34d399'
+    case 'elevated':
+      return '#fbbf24'
+    case 'stage1':
+      return '#f97316'
+    case 'stage2':
+      return '#fb7185'
   }
 }

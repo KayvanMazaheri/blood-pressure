@@ -14,7 +14,7 @@ export function SyncSettings() {
   async function handleClear() {
     if (
       !confirm(
-        'This removes your data from Telegram Cloud Storage. Your local data is not affected. Continue?',
+        'This removes your data from Telegram Cloud Storage. Your local data is not affected. Continue?'
       )
     )
       return

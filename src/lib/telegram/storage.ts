@@ -33,7 +33,7 @@ export class TelegramCloudKeyProvider implements KeyStorage {
   async getKey(): Promise<string | null> {
     return new Promise((resolve) => {
       window.Telegram!.WebApp.CloudStorage.getItem(this.storageKey, (err, val) =>
-        resolve(err ? null : val || null),
+        resolve(err ? null : val || null)
       )
     })
   }
@@ -41,7 +41,7 @@ export class TelegramCloudKeyProvider implements KeyStorage {
   async setKey(key: string): Promise<void> {
     return new Promise((resolve, reject) => {
       window.Telegram!.WebApp.CloudStorage.setItem(this.storageKey, key, (err) =>
-        err ? reject(err) : resolve(),
+        err ? reject(err) : resolve()
       )
     })
   }
@@ -49,7 +49,7 @@ export class TelegramCloudKeyProvider implements KeyStorage {
   async removeKey(): Promise<void> {
     return new Promise((resolve, reject) => {
       window.Telegram!.WebApp.CloudStorage.removeItem(this.storageKey, (err) =>
-        err ? reject(err) : resolve(),
+        err ? reject(err) : resolve()
       )
     })
   }

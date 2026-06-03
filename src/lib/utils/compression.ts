@@ -1,6 +1,4 @@
-async function streamToUint8Array(
-  readable: ReadableStream<Uint8Array>
-): Promise<Uint8Array> {
+async function streamToUint8Array(readable: ReadableStream<Uint8Array>): Promise<Uint8Array> {
   const reader = readable.getReader()
   const chunks: Uint8Array[] = []
   while (true) {

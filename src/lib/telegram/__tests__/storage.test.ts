@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import {
-  LocalStorageKeyProvider,
-  TelegramCloudKeyProvider,
-  createKeyStorage,
-} from '../storage'
+import { LocalStorageKeyProvider, TelegramCloudKeyProvider, createKeyStorage } from '../storage'
 
 describe('LocalStorageKeyProvider', () => {
   const provider = new LocalStorageKeyProvider()
@@ -44,11 +40,7 @@ describe('TelegramCloudKeyProvider', () => {
         CloudStorage: {
           getItem: (key: string, cb: (err: null, val: string) => void) =>
             cb(null, store[key] ?? ''),
-          setItem: (
-            key: string,
-            val: string,
-            cb?: (err: null) => void,
-          ) => {
+          setItem: (key: string, val: string, cb?: (err: null) => void) => {
             store[key] = val
             cb?.(null)
           },

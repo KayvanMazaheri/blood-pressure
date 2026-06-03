@@ -9,9 +9,7 @@ describe('compression', () => {
 
   it('round-trips a JSON payload', async () => {
     const original = JSON.stringify({
-      readings: [
-        { id: 'abc', systolic: 120, diastolic: 80, timestamp: 1717286400000 },
-      ],
+      readings: [{ id: 'abc', systolic: 120, diastolic: 80, timestamp: 1717286400000 }],
     })
     expect(await decompressString(await compressString(original))).toBe(original)
   })

@@ -122,9 +122,7 @@ export default function DashboardPage() {
         )}
 
         {/* Empty state */}
-        {!loading && readings.length === 0 && (
-          <EmptyState onAddReading={() => setFormOpen(true)} />
-        )}
+        {!loading && readings.length === 0 && <EmptyState onAddReading={() => setFormOpen(true)} />}
 
         {/* Main dashboard content */}
         {!loading && readings.length > 0 && (

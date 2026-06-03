@@ -90,8 +90,7 @@ export function ReadingCard({ reading, onDelete, weightUnit }: ReadingCardProps)
               {reading.armUsed && <p>💪 {reading.armUsed === 'right' ? 'Right' : 'Left'} arm</p>}
               {reading.bodyPosition && (
                 <p>
-                  🪑{' '}
-                  {reading.bodyPosition.charAt(0).toUpperCase() + reading.bodyPosition.slice(1)}
+                  🪑 {reading.bodyPosition.charAt(0).toUpperCase() + reading.bodyPosition.slice(1)}
                 </p>
               )}
               {reading.stressLevel != null && <p>🧠 Stress: {reading.stressLevel}/5</p>}
@@ -110,8 +109,7 @@ export function ReadingCard({ reading, onDelete, weightUnit }: ReadingCardProps)
               {reading.alcoholDrinks != null && <p>🍷 {reading.alcoholDrinks} drinks</p>}
               {reading.sodiumIntake && (
                 <p>
-                  🧂{' '}
-                  {reading.sodiumIntake.charAt(0).toUpperCase() + reading.sodiumIntake.slice(1)}{' '}
+                  🧂 {reading.sodiumIntake.charAt(0).toUpperCase() + reading.sodiumIntake.slice(1)}{' '}
                   sodium
                 </p>
               )}

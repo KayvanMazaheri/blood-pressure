@@ -9,21 +9,25 @@ interface HealthStatusHeroProps {
   trend?: 'up' | 'down' | 'stable'
 }
 
-export function HealthStatusHero({ avgSystolic, avgDiastolic, count, trend }: HealthStatusHeroProps) {
+export function HealthStatusHero({
+  avgSystolic,
+  avgDiastolic,
+  count,
+  trend,
+}: HealthStatusHeroProps) {
   const sys = Math.round(avgSystolic)
   const dia = Math.round(avgDiastolic)
   const cls = classifyBP(sys, dia)
   const color = ahaColor(cls)
 
-  const trendLabel =
-    trend === 'up' ? '↑ Rising'
-    : trend === 'down' ? '↓ Improving'
-    : '→ Stable'
+  const trendLabel = trend === 'up' ? '↑ Rising' : trend === 'down' ? '↓ Improving' : '→ Stable'
 
   const trendColor =
-    trend === 'up' ? 'text-rose-400'
-    : trend === 'down' ? 'text-emerald-400'
-    : 'text-muted-foreground'
+    trend === 'up'
+      ? 'text-rose-400'
+      : trend === 'down'
+        ? 'text-emerald-400'
+        : 'text-muted-foreground'
 
   return (
     <Link
@@ -38,9 +42,7 @@ export function HealthStatusHero({ avgSystolic, avgDiastolic, count, trend }: He
             <p className="text-xs font-bold tracking-widest" style={{ color }}>
               {ahaLabel(cls)}
             </p>
-            <p className="mt-0.5 text-base font-semibold text-foreground">
-              {ahaMessage(cls)}
-            </p>
+            <p className="mt-0.5 text-base font-semibold text-foreground">{ahaMessage(cls)}</p>
             <p className="mt-1 text-xs text-muted-foreground">
               Avg {sys}/{dia} · Based on last {count} reading{count !== 1 ? 's' : ''}
             </p>

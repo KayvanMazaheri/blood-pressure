@@ -1,8 +1,5 @@
 export function isTelegram(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    !!window.Telegram?.WebApp?.initDataUnsafe?.user
-  )
+  return typeof window !== 'undefined' && !!window.Telegram?.WebApp?.initDataUnsafe?.user
 }
 
 export function getTelegramUser(): TelegramWebApp['initDataUnsafe']['user'] | null {

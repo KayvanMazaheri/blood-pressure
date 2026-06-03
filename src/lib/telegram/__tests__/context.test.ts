@@ -19,7 +19,9 @@ describe('isTelegram', () => {
 
   it('returns true when user is present in initDataUnsafe', () => {
     ;(window as Window & { Telegram: unknown }).Telegram = {
-      WebApp: { initDataUnsafe: { user: { id: 1, first_name: 'Test' } } } as unknown as TelegramWebApp,
+      WebApp: {
+        initDataUnsafe: { user: { id: 1, first_name: 'Test' } },
+      } as unknown as TelegramWebApp,
     }
     expect(isTelegram()).toBe(true)
   })
@@ -53,7 +55,9 @@ describe('getTelegramWebApp', () => {
   })
 
   it('returns WebApp when present', () => {
-    const webApp = { initDataUnsafe: { user: { id: 1, first_name: 'T' } } } as unknown as TelegramWebApp
+    const webApp = {
+      initDataUnsafe: { user: { id: 1, first_name: 'T' } },
+    } as unknown as TelegramWebApp
     ;(window as Window & { Telegram: unknown }).Telegram = { WebApp: webApp }
     expect(getTelegramWebApp()).toBe(webApp)
   })

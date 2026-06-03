@@ -6,11 +6,7 @@ import { dbGetSettings, dbSaveSettings } from '@/lib/db/settings'
 
 // ── Pure logic ────────────────────────────────────────────────────────────────
 
-export function mergeReadings(
-  local: Reading[],
-  cloud: Reading[],
-  tombstones: string[],
-): Reading[] {
+export function mergeReadings(local: Reading[], cloud: Reading[], tombstones: string[]): Reading[] {
   const tombstoneSet = new Set(tombstones)
   const merged = new Map<string, Reading>()
 
@@ -100,7 +96,8 @@ export class SyncManager {
 
   constructor() {
     this._deviceId = this._getOrCreateDeviceId()
-    const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(LAST_SYNC_TS_KEY) : null
+    const stored =
+      typeof localStorage !== 'undefined' ? localStorage.getItem(LAST_SYNC_TS_KEY) : null
     this._lastSyncAt = stored ? Number(stored) : null
   }
 
@@ -158,10 +155,7 @@ export class SyncManager {
     this._error = null
 
     try {
-      const [readings, settings] = await Promise.all([
-        dbGetAllReadings(),
-        dbGetSettings(),
-      ])
+      const [readings, settings] = await Promise.all([dbGetAllReadings(), dbGetSettings()])
 
       const payload: SyncPayload = { readings, settings }
       const json = JSON.stringify(payload)
@@ -178,9 +172,7 @@ export class SyncManager {
 
       await csSet(SYNC_META_KEY, JSON.stringify(meta))
       await Promise.all(
-        chunks.map((chunk, i) =>
-          csSet(`${SYNC_CHUNK_PREFIX}${String(i).padStart(3, '0')}`, chunk),
-        ),
+        chunks.map((chunk, i) => csSet(`${SYNC_CHUNK_PREFIX}${String(i).padStart(3, '0')}`, chunk))
       )
 
       // Clean up stale chunks from a prior push that had more chunks
@@ -213,7 +205,7 @@ export class SyncManager {
 
       const chunkKeys = Array.from(
         { length: meta.chunkCount },
-        (_, i) => `${SYNC_CHUNK_PREFIX}${String(i).padStart(3, '0')}`,
+        (_, i) => `${SYNC_CHUNK_PREFIX}${String(i).padStart(3, '0')}`
       )
       const chunkMap = await csGetMany(chunkKeys)
       const encryptedBase64 = chunkKeys.map((k) => chunkMap[k] ?? '').join('')
@@ -277,10 +269,7 @@ export class SyncManager {
   async clearCloudData(): Promise<void> {
     const allKeys = await csGetAllKeys()
     const syncKeys = allKeys.filter(
-      (k) =>
-        k === SYNC_META_KEY ||
-        k === SYNC_TOMBSTONES_KEY ||
-        k.startsWith(SYNC_CHUNK_PREFIX),
+      (k) => k === SYNC_META_KEY || k === SYNC_TOMBSTONES_KEY || k.startsWith(SYNC_CHUNK_PREFIX)
     )
     if (syncKeys.length > 0) await csRemove(syncKeys)
     const { TelegramCloudKeyProvider } = await import('./storage')

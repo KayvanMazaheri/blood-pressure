@@ -61,18 +61,14 @@ describe('CloudStorage helpers', () => {
             keys.forEach((k) => delete store[k])
             cb?.(null)
           },
-          getItems: (
-            keys: string[],
-            cb: (err: null, vals: Record<string, string>) => void,
-          ) => {
+          getItems: (keys: string[], cb: (err: null, vals: Record<string, string>) => void) => {
             const vals: Record<string, string> = {}
             keys.forEach((k) => {
               if (store[k] !== undefined) vals[k] = store[k]
             })
             cb(null, vals)
           },
-          getKeys: (cb: (err: null, keys: string[]) => void) =>
-            cb(null, Object.keys(store)),
+          getKeys: (cb: (err: null, keys: string[]) => void) => cb(null, Object.keys(store)),
         } satisfies TelegramCloudStorage,
       } as unknown as TelegramWebApp,
     }

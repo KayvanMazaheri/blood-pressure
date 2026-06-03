@@ -17,7 +17,9 @@ export function BottomNav() {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background"
-      style={{ paddingBottom: 'var(--tg-safe-area-inset-bottom, env(safe-area-inset-bottom, 0px))' }}
+      style={{
+        paddingBottom: 'var(--tg-safe-area-inset-bottom, env(safe-area-inset-bottom, 0px))',
+      }}
     >
       <div className="flex">
         {TABS.map(({ href, icon: Icon, label }) => {

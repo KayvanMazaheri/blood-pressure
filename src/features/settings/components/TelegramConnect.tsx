@@ -27,8 +27,8 @@ export function TelegramConnect() {
   return (
     <div className="space-y-3 rounded-xl border p-4">
       <p className="text-sm text-muted-foreground">
-        Open this app inside Telegram to get automatic cross-device sync. Your data syncs
-        to Telegram Cloud Storage so every device stays up to date.
+        Open this app inside Telegram to get automatic cross-device sync. Your data syncs to
+        Telegram Cloud Storage so every device stays up to date.
       </p>
       <a
         href={miniAppUrl}
@@ -41,8 +41,7 @@ export function TelegramConnect() {
       {readings.length > 0 && (
         <div className="space-y-1">
           <p className="text-xs text-muted-foreground">
-            Already have data here? Export it first, then import it after opening in
-            Telegram.
+            Already have data here? Export it first, then import it after opening in Telegram.
           </p>
           <Button variant="ghost" size="sm" onClick={handleExport}>
             Export your data

@@ -8,7 +8,15 @@ interface StatCardProps {
   neutralTrend?: boolean
 }
 
-export function StatCard({ label, value, unit, colorClass = '', trend, delta, neutralTrend = false }: StatCardProps) {
+export function StatCard({
+  label,
+  value,
+  unit,
+  colorClass = '',
+  trend,
+  delta,
+  neutralTrend = false,
+}: StatCardProps) {
   let trendColor = 'text-muted-foreground'
   if (!neutralTrend && trend === 'up') trendColor = 'text-rose-400'
   else if (!neutralTrend && trend === 'down') trendColor = 'text-emerald-400'
