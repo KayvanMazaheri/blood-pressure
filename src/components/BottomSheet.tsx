@@ -16,7 +16,7 @@ export function BottomSheet({ open, onOpenChange, title, children }: BottomSheet
           <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-muted" />
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>
-        {children}
+        <div className="px-4">{children}</div>
       </SheetContent>
     </Sheet>
   )
