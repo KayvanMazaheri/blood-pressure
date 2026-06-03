@@ -8,6 +8,8 @@ import { useReadings } from '@/features/readings/hooks/useReadings'
 import { useSettings } from '@/features/settings/hooks/useSettings'
 import { exportToCSV, exportToBpdata } from '@/features/backup/export'
 import { useTelegramBackButton } from '@/lib/telegram/hooks/useTelegramBackButton'
+import { isTelegram } from '@/lib/telegram/context'
+import { tgConfirm, tgPopup } from '@/lib/telegram/dialogs'
 
 export default function HistoryPage() {
   useTelegramBackButton(true)
@@ -15,35 +17,58 @@ export default function HistoryPage() {
   const { settings } = useSettings()
   const [exporting, setExporting] = useState(false)
 
-  async function handleExport(format: 'csv' | 'bpdata') {
-    if (format === 'csv') {
-      if (!confirm('This exports unencrypted health data as a plain CSV. Continue?')) return
-      exportToCSV(readings)
-    } else {
-      setExporting(true)
-      try {
-        await exportToBpdata(readings)
-      } finally {
-        setExporting(false)
-      }
+  async function handleExportCSV() {
+    const confirmed = await tgConfirm(
+      'This exports unencrypted health data as a plain CSV. Continue?'
+    )
+    if (!confirmed) return
+    exportToCSV(readings)
+  }
+
+  async function handleExportBpdata() {
+    setExporting(true)
+    try {
+      await exportToBpdata(readings)
+    } finally {
+      setExporting(false)
     }
   }
 
-  const exportMenu = (
+  async function handleTelegramExport() {
+    const buttonId = await tgPopup({
+      title: 'Export Data',
+      message: 'Choose an export format',
+      buttons: [
+        { id: 'csv', type: 'default', text: 'CSV (plain text)' },
+        { id: 'bpdata', type: 'default', text: 'Encrypted backup (.bpdata)' },
+        { id: 'cancel', type: 'cancel' },
+      ],
+    })
+    if (buttonId === 'csv') await handleExportCSV()
+    else if (buttonId === 'bpdata') await handleExportBpdata()
+  }
+
+  const exportMenu = isTelegram() ? (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={handleTelegramExport}
+      disabled={readings.length === 0 || exporting}
+      aria-label="Export readings"
+    >
+      <Download className="h-4 w-4" />
+    </Button>
+  ) : (
     <div className="flex gap-1">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => handleExport('csv')}
-        disabled={readings.length === 0}
-      >
+      <Button variant="ghost" size="sm" onClick={handleExportCSV} disabled={readings.length === 0}>
         CSV
       </Button>
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => handleExport('bpdata')}
+        onClick={handleExportBpdata}
         disabled={readings.length === 0 || exporting}
+        aria-label="Export encrypted backup"
       >
         <Download className="h-4 w-4" />
       </Button>
