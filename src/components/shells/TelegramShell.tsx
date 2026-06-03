@@ -2,7 +2,7 @@
 'use client'
 import { useEffect } from 'react'
 import { BottomNav } from './BottomNav'
-import { applyTelegramTheme } from '@/lib/telegram/theme'
+import { applyChrome } from '@/lib/telegram/theme'
 import { getSyncManager } from '@/lib/telegram/sync'
 import { isTelegram } from '@/lib/telegram/context'
 
@@ -14,11 +14,9 @@ export function TelegramShell({ children }: { children: React.ReactNode }) {
     tg.ready()
     tg.expand()
 
-    // Remove the default dark class; Telegram theme controls colors
-    document.documentElement.classList.remove('dark')
-    applyTelegramTheme(tg.themeParams)
+    applyChrome(tg)
 
-    const handleThemeChange = () => applyTelegramTheme(tg.themeParams)
+    const handleThemeChange = () => applyChrome(tg)
     tg.onEvent('themeChanged', handleThemeChange)
 
     // Pull on open if cloud is newer or local is empty
