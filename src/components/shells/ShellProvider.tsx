@@ -9,6 +9,7 @@ export function ShellProvider({ children }: { children: React.ReactNode }) {
   const [isTg, setIsTg] = useState(false)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsTg(isTelegram())
   }, [])
 
