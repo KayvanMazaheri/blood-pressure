@@ -180,3 +180,15 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+---
+
+## Pre-Push CI Gate
+
+**Before every `git push`, run all CI checks locally in this exact order:**
+
+```bash
+npm test && npx tsc --noEmit && npm run lint && npx prettier --check .
+```
+
+All four must pass. If Prettier fails, run `npx prettier --write .` then re-check before pushing. This mirrors the CI workflow exactly (`lint` job runs ESLint then Prettier; `typecheck` runs tsc; `test` runs Vitest). Never push when any of these fail locally.

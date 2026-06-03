@@ -71,10 +71,7 @@ declare global {
   interface TelegramCloudStorage {
     setItem(key: string, value: string, cb?: (err: Error | null) => void): void
     getItem(key: string, cb: (err: Error | null, value: string) => void): void
-    getItems(
-      keys: string[],
-      cb: (err: Error | null, values: Record<string, string>) => void,
-    ): void
+    getItems(keys: string[], cb: (err: Error | null, values: Record<string, string>) => void): void
     removeItem(key: string, cb?: (err: Error | null) => void): void
     removeItems(keys: string[], cb?: (err: Error | null) => void): void
     getKeys(cb: (err: Error | null, keys: string[]) => void): void
