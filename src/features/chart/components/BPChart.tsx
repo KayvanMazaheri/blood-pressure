@@ -57,126 +57,130 @@ export function BPChart({
   }
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <ComposedChart data={data} margin={{ top: 8, right: 48, left: -16, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.5} />
+    <div role="img" aria-label="Blood pressure chart" className="[&_svg]:outline-none">
+      <ResponsiveContainer width="100%" height={220}>
+        <ComposedChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.5} />
 
-        <XAxis
-          dataKey="timestamp"
-          tickFormatter={(v: number) => formatTimestamp(v, 'short')}
-          tick={{ fontSize: 10, fill: mutedColor }}
-          axisLine={false}
-          tickLine={false}
-        />
-        <YAxis
-          domain={[domain.yMin, domain.yMax]}
-          tick={{ fontSize: 10, fill: mutedColor }}
-          axisLine={false}
-          tickLine={false}
-          width={36}
-        />
+          <XAxis
+            dataKey="timestamp"
+            tickFormatter={(v: number) => formatTimestamp(v, 'short')}
+            tick={{ fontSize: 10, fill: mutedColor }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            domain={[domain.yMin, domain.yMax]}
+            tick={{ fontSize: 10, fill: mutedColor }}
+            axisLine={false}
+            tickLine={false}
+            width={36}
+          />
 
-        <AHAZones yMin={domain.yMin} yMax={domain.yMax} />
+          <AHAZones yMin={domain.yMin} yMax={domain.yMax} />
 
-        <Customized
-          component={(props: object) => (
-            <PulsePressureBand
-              {...(props as Parameters<typeof PulsePressureBand>[0])}
-              data={data}
+          <Customized
+            component={(props: object) => (
+              <PulsePressureBand
+                {...(props as Parameters<typeof PulsePressureBand>[0])}
+                data={data}
+              />
+            )}
+          />
+
+          {targetSystolic != null && (
+            <ReferenceLine
+              y={targetSystolic}
+              stroke={targetColor}
+              strokeDasharray="6 4"
+              strokeWidth={1.5}
             />
           )}
-        />
+          {targetDiastolic != null && (
+            <ReferenceLine
+              y={targetDiastolic}
+              stroke={targetColor}
+              strokeDasharray="6 4"
+              strokeWidth={1}
+              opacity={0.7}
+            />
+          )}
 
-        {targetSystolic != null && (
-          <ReferenceLine
-            y={targetSystolic}
-            stroke={targetColor}
-            strokeDasharray="6 4"
+          <Line
+            dataKey="systolic"
+            stroke={systolicColor}
+            strokeWidth={2}
+            dot={<CustomDot />}
+            activeDot={{ r: 5 }}
+            connectNulls
+          />
+          <Line
+            dataKey="diastolic"
+            stroke={diastolicColor}
+            strokeWidth={2}
+            dot={<CustomDot />}
+            activeDot={{ r: 5 }}
+            connectNulls
+          />
+
+          {/* Trend projection — dashed */}
+          <Line
+            dataKey="trendSystolic"
+            stroke={systolicColor}
             strokeWidth={1.5}
-          />
-        )}
-        {targetDiastolic != null && (
-          <ReferenceLine
-            y={targetDiastolic}
-            stroke={targetColor}
             strokeDasharray="6 4"
-            strokeWidth={1}
-            opacity={0.7}
+            dot={false}
+            activeDot={false}
+            connectNulls
+            legendType="none"
           />
-        )}
+          <Line
+            dataKey="trendDiastolic"
+            stroke={diastolicColor}
+            strokeWidth={1.5}
+            strokeDasharray="6 4"
+            dot={false}
+            activeDot={false}
+            connectNulls
+            legendType="none"
+          />
 
-        <Line
-          dataKey="systolic"
-          stroke={systolicColor}
-          strokeWidth={2}
-          dot={<CustomDot />}
-          activeDot={{ r: 5 }}
-          connectNulls
-        />
-        <Line
-          dataKey="diastolic"
-          stroke={diastolicColor}
-          strokeWidth={2}
-          dot={<CustomDot />}
-          activeDot={{ r: 5 }}
-          connectNulls
-        />
+          <Tooltip
+            content={({ active, payload }) => {
+              if (!active || !payload?.length) return null
+              const d = payload[0].payload as ChartPoint
+              const sys = d.systolic
+              const dia = d.diastolic
+              const zone =
+                sys == null
+                  ? ''
+                  : sys >= 140
+                    ? 'Stage 2'
+                    : sys >= 130
+                      ? 'Stage 1'
+                      : sys >= 120
+                        ? 'Elevated'
+                        : 'Normal'
+              return (
+                <div className="rounded-lg border bg-popover px-3 py-2 text-xs shadow-md">
+                  <p className="font-medium">{formatTimestamp(d.timestamp, 'long')}</p>
+                  {sys != null && <p style={{ color: systolicColor }}>{sys} mmHg sys</p>}
+                  {dia != null && <p style={{ color: diastolicColor }}>{dia} mmHg dia</p>}
+                  {zone && (
+                    <p className="text-muted-foreground">{d.isTrend ? 'Projected' : zone}</p>
+                  )}
+                </div>
+              )
+            }}
+          />
 
-        {/* Trend projection — dashed */}
-        <Line
-          dataKey="trendSystolic"
-          stroke={systolicColor}
-          strokeWidth={1.5}
-          strokeDasharray="6 4"
-          dot={false}
-          activeDot={false}
-          connectNulls
-          legendType="none"
-        />
-        <Line
-          dataKey="trendDiastolic"
-          stroke={diastolicColor}
-          strokeWidth={1.5}
-          strokeDasharray="6 4"
-          dot={false}
-          activeDot={false}
-          connectNulls
-          legendType="none"
-        />
-
-        <Tooltip
-          content={({ active, payload }) => {
-            if (!active || !payload?.length) return null
-            const d = payload[0].payload as ChartPoint
-            const sys = d.systolic
-            const dia = d.diastolic
-            const zone =
-              sys == null
-                ? ''
-                : sys >= 140
-                  ? 'Stage 2'
-                  : sys >= 130
-                    ? 'Stage 1'
-                    : sys >= 120
-                      ? 'Elevated'
-                      : 'Normal'
-            return (
-              <div className="rounded-lg border bg-popover px-3 py-2 text-xs shadow-md">
-                <p className="font-medium">{formatTimestamp(d.timestamp, 'long')}</p>
-                {sys != null && <p style={{ color: systolicColor }}>{sys} mmHg sys</p>}
-                {dia != null && <p style={{ color: diastolicColor }}>{dia} mmHg dia</p>}
-                {zone && <p className="text-muted-foreground">{d.isTrend ? 'Projected' : zone}</p>}
-              </div>
-            )
-          }}
-        />
-
-        <Legend
-          iconType="line"
-          wrapperStyle={{ fontSize: 11, paddingTop: 8 }}
-          formatter={(value) => (value === 'systolic' ? 'Systolic' : 'Diastolic')}
-        />
-      </ComposedChart>
-    </ResponsiveContainer>
+          <Legend
+            iconType="line"
+            wrapperStyle={{ fontSize: 11, paddingTop: 8 }}
+            formatter={(value) => (value === 'systolic' ? 'Systolic' : 'Diastolic')}
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
   )
 }

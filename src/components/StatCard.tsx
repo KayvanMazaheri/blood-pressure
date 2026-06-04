@@ -27,12 +27,10 @@ export function StatCard({
   return (
     <div className="rounded-xl border bg-card p-3 text-center">
       <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className={`mt-1 text-2xl font-bold tabular-nums ${colorClass}`}>
+      <p className={`mt-1 text-2xl font-bold tabular-nums leading-none ${colorClass}`}>
         {value ?? '—'}
-        {value != null && unit && (
-          <span className="ml-0.5 text-sm font-normal text-muted-foreground">{unit}</span>
-        )}
       </p>
+      {value != null && unit && <p className="mt-0.5 text-xs text-muted-foreground">{unit}</p>}
       {trend != null && value != null && (
         <p className={`mt-0.5 text-xs ${trendColor}`}>{trendText}</p>
       )}
