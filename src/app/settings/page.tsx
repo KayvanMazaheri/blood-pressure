@@ -4,13 +4,31 @@ import { PageHeader } from '@/components/PageHeader'
 import { TargetForm } from '@/features/settings/components/TargetForm'
 import { UnitToggle } from '@/features/settings/components/UnitToggle'
 import { DangerZone } from '@/features/settings/components/DangerZone'
-import { CsvImport } from '@/features/backup/components/CsvImport'
-import { BackupRestore } from '@/features/backup/components/BackupRestore'
 import { useSettings } from '@/features/settings/hooks/useSettings'
 import { useReadings } from '@/features/readings/hooks/useReadings'
 import { useTelegramBackButton } from '@/lib/telegram/hooks/useTelegramBackButton'
 import { SyncSettings } from '@/features/sync/components/SyncSettings'
 import { TelegramConnect } from '@/features/settings/components/TelegramConnect'
+import dynamic from 'next/dynamic'
+
+const BackupRestore = dynamic(
+  () =>
+    import('@/features/backup/components/BackupRestore').then((m) => ({
+      default: m.BackupRestore,
+    })),
+  {
+    ssr: false,
+    loading: () => <div className="h-24 animate-pulse rounded-xl bg-muted" />,
+  }
+)
+
+const CsvImport = dynamic(
+  () => import('@/features/backup/components/CsvImport').then((m) => ({ default: m.CsvImport })),
+  {
+    ssr: false,
+    loading: () => <div className="h-24 animate-pulse rounded-xl bg-muted" />,
+  }
+)
 
 export default function SettingsPage() {
   useTelegramBackButton(true)
