@@ -93,7 +93,10 @@ describe('createKeyStorage', () => {
 
   it('returns TelegramCloudKeyProvider inside Telegram', () => {
     ;(window as Window & { Telegram: unknown }).Telegram = {
-      WebApp: { initDataUnsafe: { user: { id: 1, first_name: 'T' } } } as unknown as TelegramWebApp,
+      WebApp: {
+        colorScheme: 'dark',
+        initDataUnsafe: { user: { id: 1, first_name: 'T' } },
+      } as unknown as TelegramWebApp,
     }
     expect(createKeyStorage()).toBeInstanceOf(TelegramCloudKeyProvider)
   })

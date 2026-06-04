@@ -1,5 +1,9 @@
 export function isTelegram(): boolean {
-  return typeof window !== 'undefined' && !!window.Telegram?.WebApp?.initDataUnsafe?.user
+  if (typeof window === 'undefined') return false
+  const twa = window.Telegram?.WebApp
+  // colorScheme is always 'light'|'dark' in any Telegram Mini App context,
+  // unlike initDataUnsafe.user which is absent in many launch scenarios.
+  return !!twa && typeof twa.colorScheme === 'string'
 }
 
 export function getTelegramUser(): TelegramWebApp['initDataUnsafe']['user'] | null {

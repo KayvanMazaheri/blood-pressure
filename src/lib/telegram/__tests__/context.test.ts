@@ -10,18 +10,23 @@ describe('isTelegram', () => {
     expect(isTelegram()).toBe(false)
   })
 
-  it('returns false when initDataUnsafe.user is absent', () => {
+  it('returns false when WebApp has no colorScheme', () => {
     ;(window as Window & { Telegram: unknown }).Telegram = {
-      WebApp: { initDataUnsafe: {} } as unknown as TelegramWebApp,
+      WebApp: {} as unknown as TelegramWebApp,
     }
     expect(isTelegram()).toBe(false)
   })
 
-  it('returns true when user is present in initDataUnsafe', () => {
+  it('returns true when colorScheme is light (no user required)', () => {
     ;(window as Window & { Telegram: unknown }).Telegram = {
-      WebApp: {
-        initDataUnsafe: { user: { id: 1, first_name: 'Test' } },
-      } as unknown as TelegramWebApp,
+      WebApp: { colorScheme: 'light', initDataUnsafe: {} } as unknown as TelegramWebApp,
+    }
+    expect(isTelegram()).toBe(true)
+  })
+
+  it('returns true when colorScheme is dark', () => {
+    ;(window as Window & { Telegram: unknown }).Telegram = {
+      WebApp: { colorScheme: 'dark', initDataUnsafe: {} } as unknown as TelegramWebApp,
     }
     expect(isTelegram()).toBe(true)
   })
