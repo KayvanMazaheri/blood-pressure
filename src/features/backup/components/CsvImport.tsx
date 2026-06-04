@@ -43,7 +43,7 @@ export function CsvImport({ onImported }: CsvImportProps) {
       </Button>
       {result && (
         <div className="rounded-lg border p-3 text-sm">
-          <p className="font-medium text-green-400">{result.imported} readings imported</p>
+          <p className="font-medium text-emerald-500">{result.imported} readings imported</p>
           {result.errors.length > 0 && (
             <ul className="mt-2 space-y-1">
               {result.errors.map((e, i) => (

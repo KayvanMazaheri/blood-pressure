@@ -17,8 +17,8 @@ export function AHAZones({ yMin, yMax }: AHAZonesProps) {
       {/* Normal: below 120 */}
       <ReferenceArea y1={yMin} y2={120} fill="rgba(34,197,94,0.05)" />
       {/* Diastolic threshold tick marks */}
-      <ReferenceLine y={90} stroke="rgba(255,255,255,0.1)" strokeDasharray="2 4" />
-      <ReferenceLine y={80} stroke="rgba(255,255,255,0.1)" strokeDasharray="2 4" />
+      <ReferenceLine y={90} stroke="var(--border)" strokeDasharray="2 4" />
+      <ReferenceLine y={80} stroke="var(--border)" strokeDasharray="2 4" />
     </>
   )
 }

@@ -30,6 +30,11 @@ function CustomDot(props: { cx?: number; cy?: number; payload?: { isTrend?: bool
   return <circle cx={props.cx} cy={props.cy} r={4} fill="currentColor" stroke="none" />
 }
 
+function getCSSVar(name: string, fallback: string): string {
+  if (typeof document === 'undefined') return fallback
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback
+}
+
 export function BPChart({
   readings,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,6 +43,10 @@ export function BPChart({
   targetDiastolic,
 }: BPChartProps) {
   const { data, domain } = useChartData(readings)
+  const systolicColor = getCSSVar('--bp-systolic', '#f87171')
+  const diastolicColor = getCSSVar('--bp-diastolic', '#60a5fa')
+  const targetColor = getCSSVar('--chart-target', '#a78bfa')
+  const mutedColor = getCSSVar('--color-muted-foreground', '#888')
 
   if (data.length === 0) {
     return (
@@ -50,18 +59,18 @@ export function BPChart({
   return (
     <ResponsiveContainer width="100%" height={220}>
       <ComposedChart data={data} margin={{ top: 8, right: 48, left: -16, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.5} />
 
         <XAxis
           dataKey="timestamp"
           tickFormatter={(v: number) => formatTimestamp(v, 'short')}
-          tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+          tick={{ fontSize: 10, fill: mutedColor }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
           domain={[domain.yMin, domain.yMax]}
-          tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+          tick={{ fontSize: 10, fill: mutedColor }}
           axisLine={false}
           tickLine={false}
           width={36}
@@ -81,7 +90,7 @@ export function BPChart({
         {targetSystolic != null && (
           <ReferenceLine
             y={targetSystolic}
-            stroke="#a78bfa"
+            stroke={targetColor}
             strokeDasharray="6 4"
             strokeWidth={1.5}
           />
@@ -89,7 +98,7 @@ export function BPChart({
         {targetDiastolic != null && (
           <ReferenceLine
             y={targetDiastolic}
-            stroke="#a78bfa"
+            stroke={targetColor}
             strokeDasharray="6 4"
             strokeWidth={1}
             opacity={0.7}
@@ -98,7 +107,7 @@ export function BPChart({
 
         <Line
           dataKey="systolic"
-          stroke="#f87171"
+          stroke={systolicColor}
           strokeWidth={2}
           dot={<CustomDot />}
           activeDot={{ r: 5 }}
@@ -106,7 +115,7 @@ export function BPChart({
         />
         <Line
           dataKey="diastolic"
-          stroke="#60a5fa"
+          stroke={diastolicColor}
           strokeWidth={2}
           dot={<CustomDot />}
           activeDot={{ r: 5 }}
@@ -116,7 +125,7 @@ export function BPChart({
         {/* Trend projection — dashed */}
         <Line
           dataKey="trendSystolic"
-          stroke="#f87171"
+          stroke={systolicColor}
           strokeWidth={1.5}
           strokeDasharray="6 4"
           dot={false}
@@ -126,7 +135,7 @@ export function BPChart({
         />
         <Line
           dataKey="trendDiastolic"
-          stroke="#60a5fa"
+          stroke={diastolicColor}
           strokeWidth={1.5}
           strokeDasharray="6 4"
           dot={false}
@@ -154,8 +163,8 @@ export function BPChart({
             return (
               <div className="rounded-lg border bg-popover px-3 py-2 text-xs shadow-md">
                 <p className="font-medium">{formatTimestamp(d.timestamp, 'long')}</p>
-                {sys != null && <p className="text-red-400">{sys} mmHg sys</p>}
-                {dia != null && <p className="text-blue-400">{dia} mmHg dia</p>}
+                {sys != null && <p style={{ color: systolicColor }}>{sys} mmHg sys</p>}
+                {dia != null && <p style={{ color: diastolicColor }}>{dia} mmHg dia</p>}
                 {zone && <p className="text-muted-foreground">{d.isTrend ? 'Projected' : zone}</p>}
               </div>
             )

@@ -49,6 +49,9 @@
 }
 
 :root {
+  --bp-systolic: #f87171;
+  --bp-diastolic: #60a5fa;
+  --chart-target: #a78bfa;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -148,6 +151,9 @@
   --border: var(--tg-theme-section-separator-color);
   --input: var(--tg-theme-section-separator-color);
   --ring: var(--tg-theme-accent-text-color, var(--tg-theme-button-color));
+  --bp-systolic: var(--tg-theme-destructive-text-color, #f87171);
+  --bp-diastolic: var(--tg-theme-button-color, #60a5fa);
+  --chart-target: var(--tg-theme-accent-text-color, #a78bfa);
   font-family:
     system-ui,
     -apple-system,

@@ -143,7 +143,7 @@ export default function DashboardPage() {
                 label="Avg Sys"
                 value={avgSystolic != null ? Math.round(avgSystolic) : null}
                 unit="mmHg"
-                colorClass="text-red-400"
+                colorClass="text-[var(--bp-systolic)]"
                 trend={hasPrevPeriod ? sysTrend.direction : undefined}
                 delta={sysTrend.delta ?? undefined}
               />
@@ -151,7 +151,7 @@ export default function DashboardPage() {
                 label="Avg Dia"
                 value={avgDiastolic != null ? Math.round(avgDiastolic) : null}
                 unit="mmHg"
-                colorClass="text-blue-400"
+                colorClass="text-[var(--bp-diastolic)]"
                 trend={hasPrevPeriod ? diaTrend.direction : undefined}
                 delta={diaTrend.delta ?? undefined}
               />

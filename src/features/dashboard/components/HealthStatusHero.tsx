@@ -24,7 +24,7 @@ export function HealthStatusHero({
 
   const trendColor =
     trend === 'up'
-      ? 'text-rose-400'
+      ? 'text-destructive'
       : trend === 'down'
         ? 'text-emerald-400'
         : 'text-muted-foreground'

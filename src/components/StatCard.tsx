@@ -18,7 +18,7 @@ export function StatCard({
   neutralTrend = false,
 }: StatCardProps) {
   let trendColor = 'text-muted-foreground'
-  if (!neutralTrend && trend === 'up') trendColor = 'text-rose-400'
+  if (!neutralTrend && trend === 'up') trendColor = 'text-destructive'
   else if (!neutralTrend && trend === 'down') trendColor = 'text-emerald-400'
 
   const trendSymbol = trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'

@@ -14,8 +14,15 @@ interface PulsePressureBandProps {
   data?: DataPoint[]
 }
 
+function getCSSVar(name: string, fallback: string): string {
+  if (typeof document === 'undefined') return fallback
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback
+}
+
 export function PulsePressureBand({ xAxisMap, yAxisMap, data }: PulsePressureBandProps) {
   if (!xAxisMap || !yAxisMap || !data) return null
+  const systolicColor = getCSSVar('--bp-systolic', '#f87171')
+  const diastolicColor = getCSSVar('--bp-diastolic', '#60a5fa')
 
   const xAxis = Object.values(xAxisMap)[0]
   const yAxis = Object.values(yAxisMap)[0]
@@ -35,8 +42,8 @@ export function PulsePressureBand({ xAxisMap, yAxisMap, data }: PulsePressureBan
     <g>
       <defs>
         <linearGradient id="ppGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f87171" stopOpacity={0.3} />
-          <stop offset="100%" stopColor="#60a5fa" stopOpacity={0.2} />
+          <stop offset="0%" stopColor={systolicColor} stopOpacity={0.3} />
+          <stop offset="100%" stopColor={diastolicColor} stopOpacity={0.2} />
         </linearGradient>
       </defs>
       <polygon points={points} fill="url(#ppGrad)" />

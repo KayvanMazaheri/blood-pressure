@@ -104,7 +104,7 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
       value: systolic,
       set: setSystolic,
       error: errors.systolic,
-      color: 'text-red-400',
+      color: 'text-[var(--bp-systolic)]',
       autoFocus: true,
     },
     {
@@ -112,7 +112,7 @@ export function ReadingForm({ open, onOpenChange, onSave }: ReadingFormProps) {
       value: diastolic,
       set: setDiastolic,
       error: errors.diastolic,
-      color: 'text-blue-400',
+      color: 'text-[var(--bp-diastolic)]',
       autoFocus: false,
     },
     {
