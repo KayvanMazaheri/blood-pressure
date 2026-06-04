@@ -1,14 +1,13 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { History, Settings } from 'lucide-react'
 import { FAB } from '@/components/FAB'
 import { StatCard } from '@/components/StatCard'
 import { TimeRangeTabs } from '@/components/TimeRangeTabs'
 import { KeyMissingError } from '@/components/KeyMissingError'
-import { ReadingForm } from '@/features/readings/components/ReadingForm'
 import { ReadingCard } from '@/features/readings/components/ReadingCard'
-import { BPChart } from '@/features/chart/components/BPChart'
 import { HealthStatusHero } from '@/features/dashboard/components/HealthStatusHero'
 import { EmptyState } from '@/features/dashboard/components/EmptyState'
 import { useReadings } from '@/features/readings/hooks/useReadings'
@@ -20,6 +19,22 @@ import { isKeyPresent } from '@/lib/crypto'
 import { average, computeTrend } from '@/lib/utils/stats'
 import { timeRangeToMs } from '@/features/readings/types'
 import type { TimeRange } from '@/features/readings/types'
+
+const BPChart = dynamic(
+  () => import('@/features/chart/components/BPChart').then((m) => ({ default: m.BPChart })),
+  {
+    ssr: false,
+    loading: () => <div className="h-[220px] animate-pulse rounded-xl bg-muted" />,
+  }
+)
+
+const ReadingForm = dynamic(
+  () =>
+    import('@/features/readings/components/ReadingForm').then((m) => ({
+      default: m.ReadingForm,
+    })),
+  { ssr: false, loading: () => null }
+)
 
 export default function DashboardPage() {
   const [range, setRange] = useState<TimeRange>('1m')
@@ -113,7 +128,7 @@ export default function DashboardPage() {
               <div className="h-16 animate-pulse rounded-xl bg-muted" />
               <div className="h-16 animate-pulse rounded-xl bg-muted" />
             </div>
-            <div className="h-48 animate-pulse rounded-xl bg-muted" />
+            <div className="h-[220px] animate-pulse rounded-xl bg-muted" />
             <div className="space-y-2">
               <div className="h-12 animate-pulse rounded-xl bg-muted" />
               <div className="h-12 animate-pulse rounded-xl bg-muted" />
