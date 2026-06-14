@@ -7,9 +7,10 @@ import { ReadingList } from '@/features/readings/components/ReadingList'
 import { useReadings } from '@/features/readings/hooks/useReadings'
 import { useSettings } from '@/features/settings/hooks/useSettings'
 import { exportToCSV, exportToBpdata } from '@/features/backup/export'
+import type { SaveResult } from '@/features/backup/save-file'
 import { useTelegramBackButton } from '@/lib/telegram/hooks/useTelegramBackButton'
 import { isTelegram } from '@/lib/telegram/context'
-import { tgConfirm, tgPopup } from '@/lib/telegram/dialogs'
+import { tgAlert, tgConfirm, tgPopup } from '@/lib/telegram/dialogs'
 
 export default function HistoryPage() {
   useTelegramBackButton(true)
@@ -17,18 +18,28 @@ export default function HistoryPage() {
   const { settings } = useSettings()
   const [exporting, setExporting] = useState(false)
 
+  async function notifySaveResult(result: SaveResult) {
+    if (result === 'copied') {
+      await tgAlert('Export copied to the clipboard — paste it into a file to save it.')
+    } else if (result === 'failed') {
+      await tgAlert(
+        'Could not export on this device. Open the app in a browser to download a file.'
+      )
+    }
+  }
+
   async function handleExportCSV() {
     const confirmed = await tgConfirm(
       'This exports unencrypted health data as a plain CSV. Continue?'
     )
     if (!confirmed) return
-    exportToCSV(readings)
+    await notifySaveResult(await exportToCSV(readings))
   }
 
   async function handleExportBpdata() {
     setExporting(true)
     try {
-      await exportToBpdata(readings)
+      await notifySaveResult(await exportToBpdata(readings))
     } finally {
       setExporting(false)
     }

@@ -1,15 +1,7 @@
 import type { Reading } from '@/features/readings/types'
+import { saveTextFile, type SaveResult } from './save-file'
 
-function downloadBlob(blob: Blob, filename: string) {
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(url)
-}
-
-export function exportToCSV(readings: Reading[]) {
+export function exportToCSV(readings: Reading[]): Promise<SaveResult> {
   const header = 'date,time,systolic,diastolic,pulse'
   const rows = readings.map((r) => {
     const d = new Date(r.timestamp)
@@ -18,10 +10,10 @@ export function exportToCSV(readings: Reading[]) {
     return `${date},${time},${r.systolic},${r.diastolic},${r.pulse ?? ''}`
   })
   const csv = [header, ...rows].join('\n')
-  downloadBlob(new Blob([csv], { type: 'text/csv' }), `bp-export-${Date.now()}.csv`)
+  return saveTextFile(csv, `bp-export-${Date.now()}.csv`, 'text/csv')
 }
 
-export async function exportToBpdata(readings: Reading[]) {
+export async function exportToBpdata(readings: Reading[]): Promise<SaveResult> {
   // Generate a one-time KEK for this export
   const kek = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, [
     'encrypt',
@@ -47,5 +39,5 @@ export async function exportToBpdata(readings: Reading[]) {
   })
 
   const isoDate = new Date().toISOString().slice(0, 10)
-  downloadBlob(new Blob([bpdata], { type: 'application/json' }), `bp-backup-${isoDate}.bpdata`)
+  return saveTextFile(bpdata, `bp-backup-${isoDate}.bpdata`, 'application/json')
 }
